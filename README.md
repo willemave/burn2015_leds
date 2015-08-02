@@ -1,11 +1,11 @@
 ## Make all the LEDs blink at the Burn
 
-### installtion
+### installation
 Make sure to get Arduino >1.6.5
 Add https://www.pjrc.com/teensy/td_download.html
 If doing trinket stuff, get trinket addons
 
-## TODO 
+### TODO 
 
 - [x] link libraries and test led stuff
 - [ ] poc of teensy + ir sensor, @willemave in progress
