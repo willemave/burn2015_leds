@@ -10,14 +10,16 @@ If doing trinket stuff, get trinket addons
 ### TODO 
 
 - [x] link libraries and test led stuff
+- [x] order power supplies, fan, power connectors
+- [x] get 10awg wire
 - [ ] @willemave: poc of teensy + ir sensor, status: waiting on ir sensor, eta 8/6
 - [ ] @willemave: upload schematics for led array
 
 
 ### Open Questions
 
-- [ ] @mikelikespie: how many reels of led's do we have
-- [ ] @mikelikespie: do we have any power supplies that can handle >30a
+- [x] -@mikelikespie: how many reels of led's do we have- **8 or 10**
+- [x] -@mikelikespie: do we have any power supplies that can handle >30a- **no** 
 - [ ] determine if https://github.com/PaulStoffregen/Audio + octows2811 works (it should)
 - [ ] enough time to use audio library to modulate visualizations
 
