@@ -18,8 +18,7 @@ If doing trinket stuff, get trinket addons
 
 ### Open Questions
 
-- [x] -@mikelikespie: how many reels of led's do we have- **8 or 10**
-- [x] -@mikelikespie: do we have any power supplies that can handle >30a- **no** 
+- [x] ~~@mikelikespie: how many reels of led's do we have~~ **8 or 10**
 - [ ] determine if https://github.com/PaulStoffregen/Audio + octows2811 works (it should)
 - [ ] enough time to use audio library to modulate visualizations
 
