@@ -11,7 +11,7 @@ If doing trinket stuff, get trinket addons
 
 - [x] link libraries and test led stuff
 - [x] order power supplies, fan, power connectors
-- [] get 10awg wire
+- [ ] get 10awg wire
 - [ ] @willemave: poc of teensy + ir sensor, status: waiting on ir sensor, eta 8/6
 - [ ] @willemave: upload schematics for led array
 
