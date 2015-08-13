@@ -14,8 +14,10 @@ If you want to listen to serial:
 `platformio serialports monitor`
 
 Directory structure:
-`camp/` Folder for CAMP Le'ds
+`camp/` Folder for CAMP Led's
+
 `bike/` Willems bike
+
 `lib/` shared stuff, sym linked to each project folder
 `hoola/` kj's hoola stuff
 `libraries/` for use with Arduino ide (boo)
