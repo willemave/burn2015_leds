@@ -45,6 +45,6 @@ void loop() {
     for (int i = 0; i < 255; ++i) {
         fill_rainbow(leds, NUM_LEDS, i, 2);
         FastLED.show();
-        delay(1mess0);
+        delay(10);
     }
 }

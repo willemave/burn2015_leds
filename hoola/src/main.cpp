@@ -41,10 +41,106 @@ void setup() {
 }
 
 
+enum Program {
+    RAINBOW,
+    GRADIENT
+};
+
+enum LedMode {
+    OFF,
+    USER_INPUT,
+    RUNNING
+};
+
+struct LedState {
+    int delay = 100;
+    Program program = RAINBOW;
+    LedMode mode = OFF;
+    int numPresses = 0;
+    int ledCycleDelay = 10;
+    int timeSinceInputCheck = 0;
+};
+
+LedState state;
+
+void parse_input(void) {
+    if (state.mode == RUNNING) {
+        state.timeSinceInputCheck += state.ledCycleDelay;
+        if (state.timeSinceInputCheck < 1000) {
+            return;
+        }
+    }
+    unsigned char bytecount = 0;
+    long incomingByte = 0;
+    while (Serial.available() && bytecount < 10) {
+        unsigned char input = Serial.read();
+        Serial.println(input);
+        incomingByte = incomingByte + input;  // will not be -1
+        bytecount++;
+        delay(10);
+    }
+
+    if (incomingByte > 0) {
+        // reset for nex
+
+        Serial.print("switching: ");
+        Serial.println(incomingByte);
+        switch (incomingByte) {
+            case 115: // setup
+                Serial.println("setup");
+                state.numPresses = 0;
+                state.mode = LedMode::USER_INPUT;
+                fill_solid(leds, 64, CHSV(0, 0, 0));
+                incomingByte = 0;
+                break;
+            case 27 + 91 + 65: // up arrow
+                Serial.println("up arrow");
+                if (state.mode == LedMode::USER_INPUT) {
+                    leds[state.numPresses % 64].setHSV(0, 128, 255);
+                    state.numPresses++;
+                    state.ledCycleDelay = state.numPresses * 10;
+                }
+                incomingByte = 0;
+                break;
+            case 27 + 91 + 66: // down arrow
+                Serial.println("down arrow");
+                if (state.mode == LedMode::USER_INPUT) {
+                    state.numPresses--;
+                    leds[state.numPresses % 64].setHSV(0, 0, 0);
+                    state.ledCycleDelay = state.numPresses * 10;
+                }
+                incomingByte = 0;
+                break;
+            case 13 + 10: //enter
+                Serial.println("enter");
+                state.mode = LedMode::RUNNING;
+                state.numPresses = 0;
+                incomingByte = 0;
+                break;
+        }
+
+        FastLED.show();
+    }
+}
+
 void loop() {
-    for (int i = 0; i < 255; ++i) {
-            fill_rainbow(leds, NUM_LEDS, i, 2);
-            FastLED.show();
-            delay(1mess0);
+    parse_input();
+
+    if (state.mode == RUNNING) {
+        switch (state.program) {
+            case RAINBOW:
+
+                for (int i = 0; i < 255; i += 5) {
+                    fill_rainbow(leds, 64, i, 1);
+                    FastLED.show();
+                    delay(state.ledCycleDelay);
+                    parse_input();
+                }
+                break;
+        }
+    }
+
+    if (state.mode == OFF) {
+        fill_solid(leds, 64, CHSV(0, 0, 0));
     }
 }
