@@ -53,23 +53,18 @@ enum LedMode {
 };
 
 struct LedState {
-    int delay = 100;
+    unsigned int delay = 100;
     Program program = RAINBOW;
     LedMode mode = OFF;
     int numPresses = 0;
     int ledCycleDelay = 10;
     int timeSinceInputCheck = 0;
+    unsigned int startingColor = 0;
 };
 
 LedState state;
 
 void parse_input(void) {
-    if (state.mode == RUNNING) {
-        state.timeSinceInputCheck += state.ledCycleDelay;
-        if (state.timeSinceInputCheck < 1000) {
-            return;
-        }
-    }
     unsigned char bytecount = 0;
     long incomingByte = 0;
     while (Serial.available() && bytecount < 10) {
@@ -105,7 +100,9 @@ void parse_input(void) {
             case 27 + 91 + 66: // down arrow
                 Serial.println("down arrow");
                 if (state.mode == LedMode::USER_INPUT) {
-                    state.numPresses--;
+                    if (state.numPresses > 0) {
+                        state.numPresses--;
+                    }
                     leds[state.numPresses % 64].setHSV(0, 0, 0);
                     state.ledCycleDelay = state.numPresses * 10;
                 }
@@ -124,23 +121,32 @@ void parse_input(void) {
 }
 
 void loop() {
-    parse_input();
-
-    if (state.mode == RUNNING) {
-        switch (state.program) {
-            case RAINBOW:
-
-                for (int i = 0; i < 255; i += 5) {
-                    fill_rainbow(leds, 64, i, 1);
+    switch (state.mode) {
+        case RUNNING:
+            Serial.print(state.timeSinceInputCheck);
+            state.timeSinceInputCheck += state.ledCycleDelay;
+            if (state.timeSinceInputCheck > 1000) {
+                state.timeSinceInputCheck %= 1000;
+                Serial.println("checking input");
+                parse_input();
+            }
+            switch (state.program) {
+                case RAINBOW:
+                    state.startingColor = state.startingColor += 5 % 255;
+                    fill_rainbow(leds, 64, state.startingColor, 1);
                     FastLED.show();
                     delay(state.ledCycleDelay);
-                    parse_input();
-                }
-                break;
-        }
-    }
+                    break;
+            }
+            break;
+        case OFF:
+            parse_input();
+            fill_solid(leds, 64, CHSV(0, 0, 0));
+            break;
+        case USER_INPUT:
+            parse_input();
+            break;
 
-    if (state.mode == OFF) {
-        fill_solid(leds, 64, CHSV(0, 0, 0));
     }
 }
+
