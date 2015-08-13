@@ -8,12 +8,6 @@ BurnUtils::BurnUtils(usb_serial_class& serial) {
     s = serial;
 }
 
-void BurnUtils::heartbeat() {
-    digitalWrite(13, HIGH);
-    delay(500); // power-up safety delay
-    digitalWrite(13, LOW);
-    delay(500);
-}
 
 void BurnUtils::ir_dump(decode_results *results) {
     int count = results->rawlen;

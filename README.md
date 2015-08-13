@@ -1,25 +1,30 @@
 ## Make all the LEDs blink at the Burn
 
 ### installation
-Make sure to get Arduino >1.6.5
+we use git submodules to dependent libraries
 
-Add https://www.pjrc.com/teensy/td_download.html
+`git submodule update --recursive` 
 
-If doing trinket stuff, get trinket addons
+`[sudo] python -c "$(curl -fsSL https://raw.githubusercontent.com/platformio/platformio/master/scripts/get-platformio.py)"`
 
-### TODO 
+`platformio run -e teensy31 -t upload`
 
-- [x] link libraries and test led stuff
-- [x] order power supplies, fan, power connectors
-- [ ] get 10awg wire
-- [ ] @willemave: poc of teensy + ir sensor, status: waiting on ir sensor, eta 8/6
-- [ ] @willemave: upload schematics for led array
+If you want to listen to serial: 
+
+`platformio serialports monitor`
+
+Directory structure:
+`camp/` Folder for CAMP Le'ds
+`bike/` Willems bike
+`lib/` shared stuff, sym linked to each project folder
+`hoola/` kj's hoola stuff
+`libraries/` for use with Arduino ide (boo)
 
 
 ### Open Questions
 
 - [x] ~~@mikelikespie: how many reels of led's do we have~~ **8 or 10**
-- [ ] determine if https://github.com/PaulStoffregen/Audio + octows2811 works (it should)
+- [x] determine if https://github.com/PaulStoffregen/Audio + octows2811 works (it should) not necessary
 - [ ] enough time to use audio library to modulate visualizations
 
 
@@ -27,8 +32,7 @@ If doing trinket stuff, get trinket addons
 
 Current plan is a 8'x6' (4:3 ratio) LED array, using horizontal 30/m LED strips.
 
-will use the OctoWS2811 and Teensy 3.1 to drive the LEDs.  Will be using an IR Sensor and IR libraries to select LED program.
-
+will use the OctoWS2811 and Teensy 3.1 to drive the LEDs.  Will be using an IR Sensor and IR libraries to select LED program.  @mikelikespie will try and get a DMX controller to work
 
 ### Inspiration:
 https://www.pjrc.com/store/octo28_adaptor.html
