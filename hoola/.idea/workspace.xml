@@ -49,8 +49,8 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.73264784">
-              <caret line="38" column="26" selection-start-line="38" selection-start-column="26" selection-end-line="38" selection-end-column="26" />
+            <state vertical-scroll-proportion="0.28920308">
+              <caret line="15" column="16" selection-start-line="0" selection-start-column="0" selection-end-line="49" selection-end-column="1" />
               <folding />
             </state>
           </provider>
@@ -218,7 +218,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="recentsLimit" value="5" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../bin/noop.sh" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../camp/CMakeLists.txt" />
     <property name="FullScreen" value="false" />
     <property name="restartRequiresConfirmation" value="true" />
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode.C/C++" />
@@ -409,7 +409,7 @@
         <state vertical-scroll-proportion="0.33288947">
           <caret line="84" column="19" selection-start-line="84" selection-start-column="19" selection-end-line="84" selection-end-column="19" />
           <folding>
-            <element signature="e#4508#5667#0" expanded="true" />
+            <element signature="e#4508#5667#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -434,8 +434,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.73264784">
-          <caret line="38" column="26" selection-start-line="38" selection-start-column="26" selection-end-line="38" selection-end-column="26" />
+        <state vertical-scroll-proportion="0.28920308">
+          <caret line="15" column="16" selection-start-line="0" selection-start-column="0" selection-end-line="49" selection-end-column="1" />
           <folding />
         </state>
       </provider>
