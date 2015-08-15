@@ -11,6 +11,4 @@ public:
 
     BurnUtils (usb_serial_class& s);
     void heartbeat();
-
-    void ir_dump(decode_results *results);
 };

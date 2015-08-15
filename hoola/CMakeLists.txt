@@ -28,10 +28,10 @@ endmacro(import_arduino_library)
 
 # FastLED
 import_arduino_library(FastLED)
-
-# IR Remove
-import_arduino_library(IRremote)
 import_arduino_library(burnutils)
+import_arduino_library(IRremote)
+import_arduino_library(Adafruit_NECremote)
+import_arduino_library(FastIR)
 
 
 add_definitions(-DF_CPU=72000000L)

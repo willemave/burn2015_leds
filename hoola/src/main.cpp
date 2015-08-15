@@ -1,30 +1,37 @@
 #include <FastLED.h>
 #include <IRremote.h>
 #include <burnutils.h>
+#include "FastIR.h"
 
 #define LED_PIN 6
 #define COLOR_ORDER GBR
 #define IR_RECV_PIN 22
 #define NUM_LEDS 64       // Change to reflect the number of LEDs you have
+#define DEBUG 1
 
 CRGB leds[NUM_LEDS];      //naming our LED array
-IRrecv irrecv(IR_RECV_PIN);
-decode_results ir_results;
+//IRrecv irrecv(IR_RECV_PIN);
+//decode_results results;
+FastIR ir;
+
 
 BurnUtils bu = BurnUtils(Serial);
-
-void read_ir() {
-    if (irrecv.decode(&ir_results)) {
-        bu.ir_dump(&ir_results);
-        irrecv.resume(); // Receive the next value
-    }
-}
+//
+//void read_ir() {
+//    if (irrecv.decode(&ir_results)) {
+//        Serial.print("2 ");
+//        bu.ir_dump(&ir_results);
+//        irrecv.resume(); // Receive the next value
+//    }
+//}
 
 
 void setup() {
 // pin setups!
     pinMode(13, OUTPUT);
-    irrecv.enableIRIn(); // Start the receiver
+//    irrecv.enableIRIn(); // Start the receiver
+//
+//    irrecv.blink13(true);
 
 // let's get some debugs
     Serial.begin(9600);
@@ -121,6 +128,16 @@ void parse_input(void) {
 }
 
 void loop() {
+
+    uint32_t key;
+
+    key = ir.getkeypress();
+
+    if (key) {
+        Serial.printf("%U \r\n",key);
+    }
+    return;
+
     switch (state.mode) {
         case RUNNING:
             Serial.print(state.timeSinceInputCheck);
