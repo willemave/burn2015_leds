@@ -3,11 +3,13 @@
 ### installation
 we use git submodules to dependent libraries
 
-`git submodule update --recursive` 
+`git submodule update --init --recursive` 
 
 install platformio makes building stuff easy
 
 `[sudo] python -c "$(curl -fsSL https://raw.githubusercontent.com/platformio/platformio/master/scripts/get-platformio.py)"`
+
+`platformio platforms install teensy`
 
 `platformio run -e teensy31 -t upload`
 
