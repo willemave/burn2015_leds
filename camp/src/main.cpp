@@ -15,7 +15,6 @@ BurnUtils bu = BurnUtils(Serial);
 
 void read_ir() {
     if (irrecv.decode(&ir_results)) {
-        bu.ir_dump(&ir_results);
         irrecv.resume(); // Receive the next value
     }
 }
