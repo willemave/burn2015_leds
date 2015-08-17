@@ -12,6 +12,16 @@
 /// 16 channels of DMX values
 uint8_t dmxValues[DMX_CHANNELS] = {0};
 
+
+uint8_t &brightnessDmxValue = dmxValues[0];
+
+uint8_t &mult1DmxValue = dmxValues[1];
+uint8_t &mult2DmxValue = dmxValues[2];
+uint8_t &mult3DmxValue = dmxValues[3];
+
+/// < 128 on channel 8 disables dithering
+uint8_t &ditherMode = dmxValues[7];
+
 // Pin layouts on the teensy 3:
 // OctoWS2811: 2,14,7,8,6,20,21,5
 
@@ -28,7 +38,6 @@ void loopDMX();
 
 void setup() {
     LEDS.addLeds<OCTOWS2811>(leds, numLeds);
-    LEDS.setBrightness(255);
     LEDS.setDither(BINARY_DITHER);
 
 	setupDMX();
@@ -38,8 +47,22 @@ static const int TARGET_FRAME_LENGTH_MICROS = 1000000 / 400;
 
 static int32_t lastNow = 0;
 
+
+uint8_t lastDitherMode = BINARY_DITHER;
 void loop() {
 	loopDMX();
+
+
+	uint8_t newDitherMode = ditherMode < 128 ?  DISABLE_DITHER : BINARY_DITHER;
+
+	if (newDitherMode != lastDitherMode) {
+		LEDS.setDither(newDitherMode);
+		lastDitherMode = newDitherMode;
+
+		Serial.printf("DITHERING SET TO %d\n", newDitherMode);
+	}
+
+    LEDS.setBrightness(brightnessDmxValue);
 	
     frameNum++;
 
@@ -47,15 +70,18 @@ void loop() {
 
     double period = 1.0;
 
-    double sliceSizeMult = 0.032;
+    double sliceSizeMult = 2.0 / (mult1DmxValue + 1);
     double sliceSizePhase = fmod(timePast * sliceSizeMult, M_PI * 2);
 
     float colorSliceSizeMin = 60.0;
+	
     float colorSliceSizeSize = 60.0;
+
     float colorSliceSize = colorSliceSizeMin + (sin(sliceSizePhase) * 0.5f + 0.5f) * colorSliceSizeSize;
 
-    double sliceMult = 0.025;
-    double slicePhase = fmod(timePast * sliceMult, M_PI * 2);
+    double sliceSizeMult2 = 2.0 / (mult2DmxValue + 1);
+
+    double slicePhase = fmod(timePast * sliceSizeMult2, M_PI * 2);
     float colorSliceStart = (sin(slicePhase) * 0.5f + 0.5f) * 360.0f - colorSliceSize * .5f + 360.0f;
 
 
@@ -67,7 +93,7 @@ void loop() {
 
         uint8_t hue = uint32_t(colorSliceStart + sliceOffset * colorSliceSize) % 255;
 
-        float mult2 = 1.123;
+        float mult2 = 2.0 / (mult3DmxValue + 1);
         float otherPhase = fmod(timePast * mult2 + p / (float) (pixelsPerEdge), period) * M_PI * 2;
         float v = sin(otherPhase) * 0.5 + 0.5;
 
@@ -95,7 +121,7 @@ void loop() {
 
     LEDS.show();
     LEDS.countFPS();
-    if (frameNum % 250 == 0) {
+    if (frameNum % 3000 == 0) {
         Serial.print("FPS:");
         Serial.println(LEDS.getFPS());
     }
@@ -147,9 +173,9 @@ void loopDMX()
 			
 		}
 
-        /* Dump DMX data every second */
-        if (elapsed > 1000) {
-                elapsed -= 1000;
+        /* Dump DMX data every 10 second */
+        if (elapsed > 10000) {
+                elapsed -= 10000;
 
 				for (int i = 0; i < DMX_CHANNELS; i++) {
 						Serial.printf(" %d(%d):%d", i + dmxStartAddress, i, (int)dmxValues[i]);
