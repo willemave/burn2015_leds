@@ -52,8 +52,8 @@
 //#define IR_PIN 16 // FTM1_CH0
 //#define IR_PIN 17 // FTM1_CH1
 //#define IR_PIN 20 // FTM0_CH5
-//#define IR_PIN 21 // FTM0_CH6
-#define IR_PIN 22 // FTM0_CH0
+#define IR_PIN 21 // FTM0_CH6
+//#define IR_PIN 22 // FTM0_CH0
 //#define IR_PIN 23 // FTM0_CH1
 //#define IR_PIN 24 // FTM0_CH2
 //#define IR_PIN 25 // FTM2_CH1

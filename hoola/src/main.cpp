@@ -1,50 +1,39 @@
 #include <FastLED.h>
-#include <IRremote.h>
 #include <burnutils.h>
-#include "FastIR.h"
+#include <FastIR.h>
 
-#define LED_PIN 6
-#define COLOR_ORDER GBR
-#define IR_RECV_PIN 22
-#define NUM_LEDS 64       // Change to reflect the number of LEDs you have
-#define DEBUG 1
+#define LED_PIN 3
+#define NUM_LEDS 158       // Change to reflect the number of LEDs you have
+
+#define KEY_LEFT 3133634137
+#define KEY_UP 311950593
+#define KEY_RIGHT 2040728430
+#define KEY_DOWN 3899657665
+#define KEY_ENTER 1877724673
+#define KEY_SETUP 1185051201
+#define KEY_STOP 491731969
+#define KEY_DECREASE 760572105
+#define KEY_INCREASE 2110867777
 
 CRGB leds[NUM_LEDS];      //naming our LED array
-//IRrecv irrecv(IR_RECV_PIN);
-//decode_results results;
 FastIR ir;
-
-
-BurnUtils bu = BurnUtils(Serial);
-//
-//void read_ir() {
-//    if (irrecv.decode(&ir_results)) {
-//        Serial.print("2 ");
-//        bu.ir_dump(&ir_results);
-//        irrecv.resume(); // Receive the next value
-//    }
-//}
-
 
 void setup() {
 // pin setups!
     pinMode(13, OUTPUT);
-//    irrecv.enableIRIn(); // Start the receiver
-//
-//    irrecv.blink13(true);
 
 // let's get some debugs
     Serial.begin(9600);
 
 // fast led?
-    FastLED.addLeds<WS2812B, LED_PIN>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+    FastLED.addLeds<WS2812, LED_PIN>(leds, NUM_LEDS);
     FastLED.setBrightness(125);
 
 // hello and delay to let everything startup
     digitalWrite(13, HIGH);
-    delay(500); // power-up safety delay
+    delay(200); // power-up safety delay
     digitalWrite(13, LOW);
-    delay(500);
+    delay(200);
 }
 
 
@@ -54,15 +43,14 @@ enum Program {
 };
 
 enum LedMode {
-    OFF,
-    USER_INPUT,
-    RUNNING
+    RUNNING,
+    OFF
 };
 
 struct LedState {
     unsigned int delay = 100;
     Program program = RAINBOW;
-    LedMode mode = OFF;
+    LedMode mode = RUNNING;
     int numPresses = 0;
     int ledCycleDelay = 10;
     int timeSinceInputCheck = 0;
@@ -71,55 +59,38 @@ struct LedState {
 
 LedState state;
 
-void parse_input(void) {
-    unsigned char bytecount = 0;
-    long incomingByte = 0;
-    while (Serial.available() && bytecount < 10) {
-        unsigned char input = Serial.read();
-        Serial.println(input);
-        incomingByte = incomingByte + input;  // will not be -1
-        bytecount++;
-        delay(10);
-    }
+void CaptureInput(void) {
+    uint32_t key;
 
-    if (incomingByte > 0) {
-        // reset for nex
+    key = ir.getkeypress();
 
-        Serial.print("switching: ");
-        Serial.println(incomingByte);
-        switch (incomingByte) {
-            case 115: // setup
-                Serial.println("setup");
-                state.numPresses = 0;
-                state.mode = LedMode::USER_INPUT;
-                fill_solid(leds, 64, CHSV(0, 0, 0));
-                incomingByte = 0;
+    if (key > 0) {
+        Serial.printf("%u \r\n", key);
+        switch (key) {
+            case KEY_INCREASE: // up arrow
+                Serial.println("increase");
+                leds[state.numPresses % NUM_LEDS].setHSV(0, 128, 255);
+                state.numPresses++;
+                state.ledCycleDelay = state.numPresses * 10;
                 break;
-            case 27 + 91 + 65: // up arrow
-                Serial.println("up arrow");
-                if (state.mode == LedMode::USER_INPUT) {
-                    leds[state.numPresses % 64].setHSV(0, 128, 255);
-                    state.numPresses++;
-                    state.ledCycleDelay = state.numPresses * 10;
+            case KEY_DECREASE: // down arrow
+                Serial.println("decrease");
+                if (state.numPresses > 0) {
+                    state.numPresses--;
                 }
-                incomingByte = 0;
+                leds[state.numPresses % NUM_LEDS].setHSV(0, 0, 0);
+                state.ledCycleDelay = state.numPresses * 10;
                 break;
-            case 27 + 91 + 66: // down arrow
-                Serial.println("down arrow");
-                if (state.mode == LedMode::USER_INPUT) {
-                    if (state.numPresses > 0) {
-                        state.numPresses--;
-                    }
-                    leds[state.numPresses % 64].setHSV(0, 0, 0);
-                    state.ledCycleDelay = state.numPresses * 10;
-                }
-                incomingByte = 0;
-                break;
-            case 13 + 10: //enter
+            case KEY_ENTER: //enter
                 Serial.println("enter");
                 state.mode = LedMode::RUNNING;
                 state.numPresses = 0;
-                incomingByte = 0;
+                break;
+            case KEY_STOP:
+                Serial.println("stop");
+                state.numPresses = 0;
+                state.mode = LedMode::OFF;
+                fill_solid(leds, NUM_LEDS, CHSV(0, 0, 0));
                 break;
         }
 
@@ -127,43 +98,24 @@ void parse_input(void) {
     }
 }
 
+
 void loop() {
-
-    uint32_t key;
-
-    key = ir.getkeypress();
-
-    if (key) {
-        Serial.printf("%U \r\n",key);
-    }
-    return;
-
+    CaptureInput();
     switch (state.mode) {
         case RUNNING:
-            Serial.print(state.timeSinceInputCheck);
-            state.timeSinceInputCheck += state.ledCycleDelay;
-            if (state.timeSinceInputCheck > 1000) {
-                state.timeSinceInputCheck %= 1000;
-                Serial.println("checking input");
-                parse_input();
-            }
             switch (state.program) {
                 case RAINBOW:
                     state.startingColor = state.startingColor += 5 % 255;
-                    fill_rainbow(leds, 64, state.startingColor, 1);
+                    fill_rainbow(leds, NUM_LEDS, state.startingColor, 1);
+
                     FastLED.show();
                     delay(state.ledCycleDelay);
                     break;
             }
             break;
         case OFF:
-            parse_input();
-            fill_solid(leds, 64, CHSV(0, 0, 0));
+            // NO OP
             break;
-        case USER_INPUT:
-            parse_input();
-            break;
-
     }
 }
 
