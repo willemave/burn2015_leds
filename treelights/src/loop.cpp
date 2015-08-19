@@ -1,16 +1,30 @@
 #define USE_OCTOWS2811
 
+#if 0
+
+
 #include <OctoWS2811.h>
 #include <FastLED.h>
-#include <arm_math.h>
 
-#define NUM_STRIPS 8
+#include "SequenceBase.h"
 
 
-#define DMX_CHANNELS 16
+
+#include "clock.h"
+#include "ExampleSequence.h"
+
+#endif
+
+#import "Context.h"
+#include "clock.h"
+#include "ExampleSequence.h"
+#include "Control.h"
+
+static const int stripCount = 8;
+static const int dmxChannels = 16;
 
 /// 16 channels of DMX values
-uint8_t dmxValues[DMX_CHANNELS] = {0};
+uint8_t dmxValues[dmxChannels] = {0};
 
 
 uint8_t &brightnessDmxValue = dmxValues[0];
@@ -29,7 +43,7 @@ static const int edgeCount = 4;
 static const int pixelsPerEdge = 16;
 static const int numLeds = edgeCount * pixelsPerEdge;
 
-CRGB leds[NUM_STRIPS * numLeds];
+CRGB leds[stripCount * numLeds];
 
 static int frameNum = 0;
 
@@ -45,14 +59,72 @@ void setup() {
 
 static const int TARGET_FRAME_LENGTH_MICROS = 1000000 / 400;
 
+static const int stripLength = 64;
 static int32_t lastNow = 0;
 
 
 uint8_t lastDitherMode = BINARY_DITHER;
+
+Clock sharedClock;
+Context context(leds, stripLength, stripCount);
+
+ExampleSequence exampleSequence(stripCount, stripLength, sharedClock, CHSV(255, 0, 255));
+ExampleSequence exampleSequence2(stripCount, stripLength, sharedClock, CHSV(127, 127, 127));
+
+Sequence *sequences[] = {
+        &exampleSequence,
+        &exampleSequence2,
+};
+
+const int SequenceBasesCount = sizeof(sequences)/sizeof(decltype(*sequences));
+
+//
+//static Context context(leds, stripLength, stripCount);
+//
+int currentSequenceIndex = -1;
+Sequence *currentSequence = nullptr;
+
+IdentityValueControl brightnessControl([]{return dmxValues[0];});
+
+LinearlyInterpolatedValueControl<int> visualizationControl([]{return dmxValues[7];}, 0, SequenceBasesCount);
+
+
+Control *controls[] = {
+    &brightnessControl,
+    &visualizationControl,
+};
+
+// shims
+
+
+extern "C" int _kill(int pid, int sig) {return 0;}
+extern "C" int _getpid(void) { return 1;}
+
+
 void loop() {
-	loopDMX();
 
+    loopDMX();
+    
+    sharedClock.tick();
 
+    for (auto c : controls) {
+        c->tick(sharedClock);
+    }
+    
+    LEDS.setBrightness(brightnessControl.value());
+    
+    int newSequenceIndex = visualizationControl.value();
+    if (newSequenceIndex != currentSequenceIndex) {
+        currentSequenceIndex = newSequenceIndex;
+        currentSequence = sequences[currentSequenceIndex];
+        currentSequence->initialize();
+    }
+    
+    currentSequence->loop(&context);
+    
+//    exampleSequence.loop(&context);
+
+    /*
 	uint8_t newDitherMode = ditherMode < 128 ?  DISABLE_DITHER : BINARY_DITHER;
 
 	if (newDitherMode != lastDitherMode) {
@@ -102,7 +174,7 @@ void loop() {
         for (int edge = 0; edge < edgeCount; edge++) {
             int pos = edge * pixelsPerEdge + p;
             int mappedPos = pos;
-            for (int strip = 0; strip < NUM_STRIPS; strip++) {
+            for (int strip = 0; strip < stripCount; strip++) {
                 leds[mappedPos + (strip * numLeds)] = color;
             }
         }
@@ -118,6 +190,7 @@ void loop() {
         Serial.println(targetNow - now);
         delayMicroseconds(targetNow - now);
     }
+     */
 
     LEDS.show();
     LEDS.countFPS();
@@ -168,7 +241,7 @@ void loopDMX()
         }
 
 		/* Display all nonzero DMX values */
-		for (int i = dmxStartAddress; i < dmxStartAddress + DMX_CHANNELS; i++) {
+		for (int i = dmxStartAddress; i < dmxStartAddress + dmxChannels; i++) {
 			dmxValues[i - dmxStartAddress] = dmx.getDimmer(i);
 			
 		}
@@ -177,7 +250,7 @@ void loopDMX()
         if (elapsed > 10000) {
                 elapsed -= 10000;
 
-				for (int i = 0; i < DMX_CHANNELS; i++) {
+				for (int i = 0; i < dmxChannels; i++) {
 						Serial.printf(" %d(%d):%d", i + dmxStartAddress, i, (int)dmxValues[i]);
 				}
                 Serial.printf("\n");
