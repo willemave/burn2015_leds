@@ -8,8 +8,11 @@
 /// What you use to draw
 class Context {
 public:
-    Context(CRGB *leds, int stripLength, int stripCount) : _leds(leds), _stripLength(stripLength),
-    _stripCount(stripCount) { }
+    Context(CRGB *leds, int stripLength, int stripCount) :
+    _leds(leds),
+    _stripLength(stripLength),
+    _stripCount(stripCount) {
+    }
     
     inline void setColor(int strip, int pixel, CRGB color) {
 //        assert(strip < StripLength );

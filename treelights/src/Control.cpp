@@ -3,11 +3,13 @@
 //
 
 #include "Control.h"
-
-
 template <typename ValueType>
 void ValueControl<ValueType>::tick(const Clock &clock) {
-    _value = computeNextValue(clock);
+    auto newValue = computeNextValue(clock);
+    _didChange = _value != newValue;
+    if (_didChange) {
+        _value = newValue;
+    }
 }
 
 bool BooleanValueControl::computeNextValue(const Clock &clock) {

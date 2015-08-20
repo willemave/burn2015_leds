@@ -39,6 +39,10 @@ public:
     inline uint8_t dmxValue() {
         return _dmxValueProvider();
     }
+    
+    inline bool didChange() {
+        return _didChange;
+    }
 
 protected:
     virtual ValueType computeNextValue(const Clock &clock) = 0;
@@ -46,6 +50,7 @@ protected:
 private:
     ValueType _value;
     uint8_t *_valueSource;
+    bool _didChange = false;
     std::function<uint8_t()> _dmxValueProvider;
 };
 
@@ -62,9 +67,11 @@ protected:
 // Just a passthrough
 class IdentityValueControl : public ValueControl<uint8_t> {
 public:
-    IdentityValueControl(std::function<uint8_t()>  dmxValueProvider) : ValueControl<uint8_t>::ValueControl(dmxValueProvider) { }
+    IdentityValueControl(std::function<uint8_t()>  dmxValueProvider) : ValueControl<uint8_t>::ValueControl(dmxValueProvider) {
+    }
 
 protected:
+    
     virtual uint8_t computeNextValue(const Clock &clock);
 };
 

@@ -18,10 +18,9 @@ template<class T>
 class SequenceBase : public Sequence {
 public:
     SequenceBase(int stripCount, int stripLength, const Clock &clock)
-            : _stripCount(stripCount), _stripLength(stripLength), _clock(clock) {
+            :  _clock(clock), _stripCount(stripCount), _stripLength(stripLength) {
                 
     }
-
 
     virtual void loop(Context *context) {
         for (int strip = 0; strip < _stripCount; ++strip) {
@@ -31,8 +30,15 @@ public:
             }
         }
     };
-
-
+    
+    int stripCount() {
+        return _stripCount;
+    }
+    
+    int stripLength() {
+        return _stripLength;
+    }
+    
 private:
     const Clock &_clock;
     const int _stripCount;

@@ -21,29 +21,19 @@
 #include "Control.h"
 
 static const int stripCount = 8;
+static const int stripLength = 64;
 static const int dmxChannels = 16;
 
 /// 16 channels of DMX values
 uint8_t dmxValues[dmxChannels] = {0};
 
 
-uint8_t &brightnessDmxValue = dmxValues[0];
-
-uint8_t &mult1DmxValue = dmxValues[1];
-uint8_t &mult2DmxValue = dmxValues[2];
-uint8_t &mult3DmxValue = dmxValues[3];
-
-/// < 128 on channel 8 disables dithering
-uint8_t &ditherMode = dmxValues[7];
 
 // Pin layouts on the teensy 3:
 // OctoWS2811: 2,14,7,8,6,20,21,5
+static const int numLeds = stripCount * stripLength;
 
-static const int edgeCount = 4;
-static const int pixelsPerEdge = 16;
-static const int numLeds = edgeCount * pixelsPerEdge;
-
-CRGB leds[stripCount * numLeds];
+CRGB leds[numLeds] = {0};
 
 static int frameNum = 0;
 
@@ -51,16 +41,13 @@ void setupDMX();
 void loopDMX();
 
 void setup() {
-    LEDS.addLeds<OCTOWS2811>(leds, numLeds);
+    LEDS.addLeds<OCTOWS2811>(leds, stripLength);
     LEDS.setDither(BINARY_DITHER);
 
-	setupDMX();
+    setupDMX();
 }
 
-static const int TARGET_FRAME_LENGTH_MICROS = 1000000 / 400;
-
-static const int stripLength = 64;
-static int32_t lastNow = 0;
+//static const int TARGET_FRAME_LENGTH_MICROS = 1000000 / 400;
 
 
 uint8_t lastDitherMode = BINARY_DITHER;
@@ -68,15 +55,6 @@ uint8_t lastDitherMode = BINARY_DITHER;
 Clock sharedClock;
 Context context(leds, stripLength, stripCount);
 
-ExampleSequence exampleSequence(stripCount, stripLength, sharedClock, CHSV(255, 0, 255));
-ExampleSequence exampleSequence2(stripCount, stripLength, sharedClock, CHSV(127, 127, 127));
-
-Sequence *sequences[] = {
-        &exampleSequence,
-        &exampleSequence2,
-};
-
-const int SequenceBasesCount = sizeof(sequences)/sizeof(decltype(*sequences));
 
 //
 //static Context context(leds, stripLength, stripCount);
@@ -86,13 +64,37 @@ Sequence *currentSequence = nullptr;
 
 IdentityValueControl brightnessControl([]{return dmxValues[0];});
 
-LinearlyInterpolatedValueControl<int> visualizationControl([]{return dmxValues[7];}, 0, SequenceBasesCount);
 
+/// Also used for HSV
+IdentityValueControl rControl([]{return dmxValues[1];});
+IdentityValueControl gControl([]{return dmxValues[2];});
+IdentityValueControl bControl([]{return dmxValues[3];});
+
+ExampleSequence exampleSequence(stripCount, stripLength, sharedClock, CHSV(255, 0, 255));
+ExampleSequence exampleSequence2(stripCount, stripLength, sharedClock, CHSV(127, 127, 127));
+
+RGBSequence rgbSequence(stripCount, stripLength, sharedClock,  rControl, gControl, bControl);
+HSVSequence hsvSequence(stripCount, stripLength, sharedClock,  &rControl, &gControl, &bControl);
+
+Sequence *sequences[] = {
+    &hsvSequence,
+    &rgbSequence,
+    &exampleSequence,
+    &exampleSequence2,
+};
+
+const int SequenceBasesCount = sizeof(sequences)/sizeof(Sequence *);
+
+LinearlyInterpolatedValueControl<int> visualizationControl([]{return dmxValues[7];}, 0, SequenceBasesCount - 1);
 
 Control *controls[] = {
     &brightnessControl,
     &visualizationControl,
+    &rControl,
+    &gControl,
+    &bControl,
 };
+
 
 // shims
 
@@ -111,9 +113,12 @@ void loop() {
         c->tick(sharedClock);
     }
     
-    LEDS.setBrightness(brightnessControl.value());
+    if (brightnessControl.didChange()) {
+        LEDS.setBrightness(brightnessControl.value());
+    }
     
     int newSequenceIndex = visualizationControl.value();
+    
     if (newSequenceIndex != currentSequenceIndex) {
         currentSequenceIndex = newSequenceIndex;
         currentSequence = sequences[currentSequenceIndex];
@@ -136,7 +141,6 @@ void loop() {
 
     LEDS.setBrightness(brightnessDmxValue);
 	
-    frameNum++;
 
     float timePast = (millis()) / 2000.0;
 
@@ -194,6 +198,7 @@ void loop() {
 
     LEDS.show();
     LEDS.countFPS();
+    frameNum++;
     if (frameNum % 3000 == 0) {
         Serial.print("FPS:");
         Serial.println(LEDS.getFPS());
@@ -202,8 +207,6 @@ void loop() {
 
 
 uint16_t dmxStartAddress = 65;
-
-
 
 #include <DmxReceiver.h>
 
@@ -234,16 +237,14 @@ elapsedMillis elapsed;
 void loopDMX()
 {
         /* Toggle LED on every new frame */
-        if (dmx.newFrame())
-        {
+        if (dmx.newFrame()) {
                 led = !led;
                 digitalWrite(LED_BUILTIN, led);
         }
 
 		/* Display all nonzero DMX values */
-		for (int i = dmxStartAddress; i < dmxStartAddress + dmxChannels; i++) {
-			dmxValues[i - dmxStartAddress] = dmx.getDimmer(i);
-			
+		for (int i = 0; i < dmxChannels; i++) {
+			dmxValues[i] = dmx.getDimmer(i + dmxStartAddress);
 		}
 
         /* Dump DMX data every 10 second */
