@@ -43,7 +43,7 @@ file(GLOB_RECURSE
 		src/*.h
 )
 
-add_library(treelights SHARED ${treelights_SRC})
+add_library(treelights SHARED ${treelights_SRC} src/SinWaveSequence.cpp src/SinWaveSequence.h)
 
 
 add_definitions(-DF_CPU=72000000L)

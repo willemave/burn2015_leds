@@ -92,5 +92,6 @@ private:
 };
 
 template class LinearlyInterpolatedValueControl<int>;
+template class LinearlyInterpolatedValueControl<float>;
 
 #endif //TREELIGHTS_CONTROL_H

@@ -19,6 +19,7 @@
 #include "clock.h"
 #include "ExampleSequence.h"
 #include "Control.h"
+#include "SinWaveSequence.h"
 
 static const int stripCount = 8;
 static const int stripLength = 64;
@@ -76,11 +77,17 @@ ExampleSequence exampleSequence2(stripCount, stripLength, sharedClock, CHSV(127,
 RGBSequence rgbSequence(stripCount, stripLength, sharedClock,  rControl, gControl, bControl);
 HSVSequence hsvSequence(stripCount, stripLength, sharedClock,  &rControl, &gControl, &bControl);
 
+LinearlyInterpolatedValueControl<float> wavelengthControl([]{return dmxValues[1];}, 4, stripLength);
+LinearlyInterpolatedValueControl<float> phaseControl([]{return dmxValues[2];}, 1, stripLength * 2);
+
+SinWaveSequence sinWaveSequence(stripCount, stripLength, sharedClock, phaseControl, wavelengthControl);
+
 Sequence *sequences[] = {
     &hsvSequence,
     &rgbSequence,
     &exampleSequence,
     &exampleSequence2,
+    &sinWaveSequence,
 };
 
 const int SequenceBasesCount = sizeof(sequences)/sizeof(Sequence *);
@@ -93,6 +100,8 @@ Control *controls[] = {
     &rControl,
     &gControl,
     &bControl,
+    &wavelengthControl,
+    &phaseControl,
 };
 
 
