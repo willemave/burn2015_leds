@@ -12,6 +12,8 @@
 
 #include <math.h>
 
+typedef BufferedControl<LinearlyInterpolatedValueControl<float>> SmoothLinearControl;
+
 class SinWaveSequence : public SequenceBase<SinWaveSequence> {
 
 
@@ -21,7 +23,10 @@ public:
                            clock) { }
 
     inline CRGB colorForPixel(int strip, int pixel, const Context &context) {
-        int v = uint8_t((sinf((pixel + _lightnessPhase.value()) * TWO_PI / _wavelength.value()) + 1) * 0.5 * 255);
+        float sinOffset = (pixel + _centerOfWaveControl.value()) * TWO_PI / _wavelength.value();
+        sinOffset +=  _lightnessPhase.value();
+        
+        int v = uint8_t((sinf(sinOffset) + 1) * 0.5 * 255);
         return CHSV(0, 0, v);
     }
 
@@ -29,10 +34,12 @@ public:
         return _controls;
     }
 private:
-    BufferedControl<LinearlyInterpolatedValueControl<float>> _lightnessPhase = BufferedControl<LinearlyInterpolatedValueControl<float>>(4, stripLength()); // This should probably be an accumulator
-    BufferedControl<LinearlyInterpolatedValueControl<float>> _wavelength = BufferedControl<LinearlyInterpolatedValueControl<float>>(10, stripLength() * 2); // This should probably be an accumulator
+    SmoothLinearControl _lightnessPhase = SmoothLinearControl(4, stripLength()); // This should probably be an accumulator
     
-    const std::vector<Control *> _controls = {&_lightnessPhase, &_wavelength};
+    SmoothLinearControl _wavelength = SmoothLinearControl(4, stripLength() * 2);
+    SmoothLinearControl _centerOfWaveControl = SmoothLinearControl(-stripLength(), 0);
+    
+    const std::vector<Control *> _controls = {&_lightnessPhase, &_wavelength, &_centerOfWaveControl};
 };
 
 
