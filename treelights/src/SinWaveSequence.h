@@ -5,6 +5,7 @@
 #ifndef TREELIGHTS_SINWAVESEQUENCE_H
 #define TREELIGHTS_SINWAVESEQUENCE_H
 
+#include <vector>
 
 #include "Control.h"
 #include "SequenceBase.h"
@@ -15,21 +16,23 @@ class SinWaveSequence : public SequenceBase<SinWaveSequence> {
 
 
 public:
-    SinWaveSequence(int stripCount, int stripLength, const Clock &clock,
-                    const ValueControl<float> &_lightnessPhase,
-                        const ValueControl<float> &_wavelength)
+    SinWaveSequence(int stripCount, int stripLength, const Clock &clock)
             : SequenceBase(stripCount, stripLength,
-                           clock),
-              _lightnessPhase(_lightnessPhase), _wavelength(_wavelength) { }
+                           clock) { }
 
     inline CRGB colorForPixel(int strip, int pixel, const Context &context) {
         int v = uint8_t((sinf((pixel + _lightnessPhase.value()) * TWO_PI / _wavelength.value()) + 1) * 0.5 * 255);
         return CHSV(0, 0, v);
     }
 
+    virtual const std::vector<Control *> &controls() {
+        return _controls;
+    }
 private:
-    const ValueControl<float> &_lightnessPhase; // This should probably be an accumulator
-    const ValueControl<float> &_wavelength; // This should probably be an accumulator
+    BufferedControl<LinearlyInterpolatedValueControl<float>> _lightnessPhase = BufferedControl<LinearlyInterpolatedValueControl<float>>(4, stripLength()); // This should probably be an accumulator
+    BufferedControl<LinearlyInterpolatedValueControl<float>> _wavelength = BufferedControl<LinearlyInterpolatedValueControl<float>>(10, stripLength() * 2); // This should probably be an accumulator
+    
+    const std::vector<Control *> _controls = {&_lightnessPhase, &_wavelength};
 };
 
 

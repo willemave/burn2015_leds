@@ -8,6 +8,7 @@
 
 #include "SequenceBase.h"
 #include "Control.h"
+#include <vector>
 
 /// Just copy the next 2 lines and replace the words "ExampleSequence"
 
@@ -28,44 +29,48 @@ class HSVSequence : public SequenceBase<HSVSequence> {
 public:
     HSVSequence(int stripCount,
                 int stripLength,
-                const Clock &clock,
-                IdentityValueControl *hControl,
-                IdentityValueControl *sControl,
-                IdentityValueControl *vControl)
-    : SequenceBase<HSVSequence>::SequenceBase(stripCount, stripLength, clock),
-    _hControl(hControl), _sControl(sControl), _vControl(vControl) {
+                const Clock &clock)
+    : SequenceBase<HSVSequence>::SequenceBase(stripCount, stripLength, clock) {
     }
     
     inline CRGB colorForPixel(int strip, int pixel, const Context &context) {
-        return CHSV(_hControl->value(), _sControl->value(), _vControl->value());
+        return CHSV(_hControl.value(), _sControl.value(), _vControl.value());
+    }
+    
+    virtual const std::vector<Control *> &controls() {
+        return _controls;
     }
     
 private:
-    IdentityValueControl *_hControl;
-    IdentityValueControl *_sControl;
-    IdentityValueControl *_vControl;
+    IdentityValueControl _hControl = IdentityValueControl();
+    IdentityValueControl _sControl = IdentityValueControl();
+    IdentityValueControl _vControl = IdentityValueControl();
+    
+    const std::vector<Control *> _controls = {&_hControl, &_sControl, &_vControl};
 };
 
 class RGBSequence : public SequenceBase<RGBSequence> {
 public:
     RGBSequence(int stripCount,
                 int stripLength,
-                const Clock &clock,
-                const IdentityValueControl &rControl,
-                const IdentityValueControl &gControl,
-                const IdentityValueControl &bControl)
-    : SequenceBase<RGBSequence>::SequenceBase(stripCount, stripLength, clock),
-    _rControl(rControl), _gControl(gControl), _bControl(bControl) {
+                const Clock &clock)
+    : SequenceBase<RGBSequence>::SequenceBase(stripCount, stripLength, clock) {
     }
     
     inline CRGB colorForPixel(int strip, int pixel, const Context &context) {
         return CRGB(_rControl.value(), _gControl.value(), _bControl.value());
     }
     
+    virtual const std::vector<Control *> &controls() {
+        return _controls;
+    }
+
 private:
-    const IdentityValueControl &_rControl;
-    const IdentityValueControl &_gControl;
-    const IdentityValueControl &_bControl;
+    IdentityValueControl _rControl = IdentityValueControl();
+    IdentityValueControl _gControl = IdentityValueControl();
+    IdentityValueControl _bControl = IdentityValueControl();
+
+    const std::vector<Control*> _controls = {&_rControl, &_gControl, &_bControl};
 };
 
 

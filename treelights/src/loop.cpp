@@ -62,25 +62,16 @@ Context context(leds, stripLength, stripCount);
 //
 int currentSequenceIndex = -1;
 Sequence *currentSequence = nullptr;
+const std::vector<Control *> *currentControls = nullptr;
 
-IdentityValueControl brightnessControl([]{return dmxValues[0];});
-
-
-/// Also used for HSV
-IdentityValueControl rControl([]{return dmxValues[1];});
-IdentityValueControl gControl([]{return dmxValues[2];});
-IdentityValueControl bControl([]{return dmxValues[3];});
+IdentityValueControl brightnessControl;
 
 ExampleSequence exampleSequence(stripCount, stripLength, sharedClock, CHSV(255, 0, 255));
 ExampleSequence exampleSequence2(stripCount, stripLength, sharedClock, CHSV(127, 127, 127));
 
-RGBSequence rgbSequence(stripCount, stripLength, sharedClock,  rControl, gControl, bControl);
-HSVSequence hsvSequence(stripCount, stripLength, sharedClock,  &rControl, &gControl, &bControl);
-
-LinearlyInterpolatedValueControl<float> wavelengthControl([]{return dmxValues[1];}, 4, stripLength);
-LinearlyInterpolatedValueControl<float> phaseControl([]{return dmxValues[2];}, 1, stripLength * 2);
-
-SinWaveSequence sinWaveSequence(stripCount, stripLength, sharedClock, phaseControl, wavelengthControl);
+SinWaveSequence sinWaveSequence(stripCount, stripLength, sharedClock);
+HSVSequence hsvSequence(stripCount, stripLength, sharedClock);
+RGBSequence rgbSequence(stripCount, stripLength, sharedClock);
 
 Sequence *sequences[] = {
     &hsvSequence,
@@ -92,17 +83,8 @@ Sequence *sequences[] = {
 
 const int SequenceBasesCount = sizeof(sequences)/sizeof(Sequence *);
 
-LinearlyInterpolatedValueControl<int> visualizationControl([]{return dmxValues[7];}, 0, SequenceBasesCount - 1);
+LinearlyInterpolatedValueControl<int> visualizationControl( 0, SequenceBasesCount - 1);
 
-Control *controls[] = {
-    &brightnessControl,
-    &visualizationControl,
-    &rControl,
-    &gControl,
-    &bControl,
-    &wavelengthControl,
-    &phaseControl,
-};
 
 
 // shims
@@ -118,9 +100,8 @@ void loop() {
     
     sharedClock.tick();
 
-    for (auto c : controls) {
-        c->tick(sharedClock);
-    }
+    brightnessControl.tick(sharedClock, dmxValues[0]);
+    visualizationControl.tick(sharedClock, dmxValues[7]);
     
     if (brightnessControl.didChange()) {
         LEDS.setBrightness(brightnessControl.value());
@@ -128,10 +109,27 @@ void loop() {
     
     int newSequenceIndex = visualizationControl.value();
     
+     
     if (newSequenceIndex != currentSequenceIndex) {
         currentSequenceIndex = newSequenceIndex;
         currentSequence = sequences[currentSequenceIndex];
         currentSequence->initialize();
+        currentControls = &currentSequence->controls();
+    }
+    
+    auto iter = currentControls->begin();
+    for (int i = 0; i < dmxChannels && iter != currentControls->end(); ++i){
+        switch (i) {
+                // These are reserved
+            case 0:
+            case 7:
+                continue;
+            default:
+                break;
+        }
+        
+        (*iter)->tick(sharedClock, dmxValues[i]);
+        ++iter;
     }
     
     currentSequence->loop(&context);

@@ -1,15 +1,24 @@
 #ifndef INCLUDE_SEQUENCE_BASE_H
 #define INCLUDE_SEQUENCE_BASE_H
 
-//#include <time.h>
 #include "Context.h"
 #include "clock.h"
+#include <vector>
+
+class Control;
 
 class Sequence {
 public:
     virtual void loop(Context *context) = 0;
 
     virtual void initialize() {
+    }
+    
+    /// You should return your controls here. Default implementation is empty vector
+    virtual const std::vector<Control *> &controls() {
+        static const std::vector<Control *> emptyImplementation {};
+        
+        return emptyImplementation;
     }
 };
 

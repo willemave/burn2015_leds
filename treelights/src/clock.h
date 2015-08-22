@@ -1,7 +1,6 @@
 #ifndef INCLUDE_CLOCK_H
 #define INCLUDE_CLOCK_H
 
-//#include <stdint.h>
 #include <core_pins.h>
 
 /*!
