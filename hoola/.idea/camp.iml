@@ -2,17 +2,186 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastIR/FastIR.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastIR/FastIR.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/FastLED.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/FastLED.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/bitswap.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/chipsets.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/color.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/colorpalettes.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/colorpalettes.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/colorutils.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/colorutils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/controller.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/dmx.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/fastled_config.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/fastled_delay.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/fastled_progmem.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/fastpin.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/fastspi.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/fastspi_bitbang.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/fastspi_types.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/hsv2rgb.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/hsv2rgb.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/led_sysdefs.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/lib8tion.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/lib8tion.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/lib8tion/math8.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/lib8tion/random8.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/lib8tion/scale8.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/lib8tion/trig8.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/noise.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/noise.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/pixeltypes.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/common/m0clockless.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/d21/clockless_arm_d21.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/d21/fastled_arm_d21.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/d21/fastpin_arm_d21.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/d21/led_sysdefs_arm_d21.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/k20/clockless_arm_k20.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/k20/clockless_block_arm_k20.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/k20/fastled_arm_k20.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/k20/fastpin_arm_k20.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/k20/fastspi_arm_k20.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/k20/led_sysdefs_arm_k20.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/k20/octows2811_controller.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/k20/smartmatrix_t3.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/kl26/clockless_arm_kl26.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/kl26/fastled_arm_kl26.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/kl26/fastpin_arm_kl26.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/kl26/fastspi_arm_kl26.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/kl26/led_sysdefs_arm_kl26.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/nrf51/clockless_arm_nrf51.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/nrf51/fastled_arm_nrf51.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/nrf51/fastpin_arm_nrf51.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/nrf51/fastspi_arm_nrf51.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/nrf51/led_sysdefs_arm_nrf51.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/sam/clockless_arm_sam.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/sam/clockless_block_arm_sam.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/sam/fastled_arm_sam.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/sam/fastpin_arm_sam.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/sam/fastspi_arm_sam.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/sam/led_sysdefs_arm_sam.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/stm32/clockless_arm_stm32.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/stm32/fastled_arm_stm32.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/stm32/fastpin_arm_stm32.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/arm/stm32/led_sysdefs_arm_stm32.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/avr/clockless_trinket.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/avr/fastled_avr.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/avr/fastpin_avr.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/avr/fastspi_avr.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/platforms/avr/led_sysdefs_avr.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/power_mgt.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/power_mgt.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FastLED/wiring.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/Arduino.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/AudioStream.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/AudioStream.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/DMAChannel.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/DMAChannel.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/HardwareSerial.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/HardwareSerial1.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/HardwareSerial2.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/HardwareSerial3.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/IPAddress.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/IPAddress.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/IntervalTimer.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/IntervalTimer.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/Print.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/Print.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/Printable.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/SPIFIFO.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/Stream.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/Stream.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/Tone.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/WMath.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/WProgram.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/WString.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/WString.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/analog.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/arm_math.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/avr/interrupt.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/avr/io.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/avr/pgmspace.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/avr_emulation.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/avr_emulation.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/avr_functions.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/binary.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/core_cm4.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/core_cm4_simd.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/core_cmInstr.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/core_id.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/core_pins.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/eeprom.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/elapsedMillis.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/keylayouts.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/keylayouts.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/kinetis.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/main.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/math_helper.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/math_helper.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/mk20dx128.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/mk20dx128.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/new.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/new.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/nonstd.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/pins_arduino.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/pins_teensy.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/ser_print.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/ser_print.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/serial1.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/serial2.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/serial3.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/touch.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_desc.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_desc.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_dev.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_dev.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_flightsim.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_flightsim.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_inst.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_joystick.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_joystick.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_keyboard.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_keyboard.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_mem.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_mem.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_midi.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_midi.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_mouse.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_mouse.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_names.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_rawhid.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_rawhid.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_seremu.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_seremu.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_serial.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_serial.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/usb_undef.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/util/atomic.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/wiring.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/FrameworkArduino/yield.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/Snooze/Snooze.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/Snooze/Snooze.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/Snooze/utility/bitband.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/Snooze/utility/cmp.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/Snooze/utility/digital.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/Snooze/utility/kinetis_ext.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/Snooze/utility/llwu.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/Snooze/utility/lptmr.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/Snooze/utility/lvd.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/Snooze/utility/mcg.c" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/Snooze/utility/mcg.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/Snooze/utility/peripheral.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/Snooze/utility/rtc.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/Snooze/utility/smc.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/Snooze/utility/tsi.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/.pioenvs/teensy31/Snooze/utility/util.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/lib/Adafruit_NECremote/Adafruit_NECremote.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/lib/Adafruit_NECremote/Adafruit_NECremote.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/lib/FastIR/FastIR.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/lib/FastIR/FastIR.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/lib/FastLED/FastLED.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/lib/FastLED/FastLED.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/lib/IRremote/IRremote.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/lib/IRremote/IRremote.h" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/lib/burnutils/burnutils.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/lib/burnutils/burnutils.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/star.cpp" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -184,11 +353,10 @@
           <root url="file://$USER_HOME$/.platformio/packages/framework-arduinoteensy/cores/teensy3" />
           <root url="file://$USER_HOME$/.platformio/packages/toolchain-gccarmnoneeabi/arm-none-eabi/include" />
           <root url="file://$USER_HOME$/.platformio/packages/toolchain-gccarmnoneeabi/lib/gcc/arm-none-eabi/4.8.3/include" />
-          <root url="file://$MODULE_DIR$/lib/Adafruit_NECremote" />
           <root url="file://$MODULE_DIR$/lib/FastIR" />
           <root url="file://$MODULE_DIR$/lib/FastLED" />
-          <root url="file://$MODULE_DIR$/lib/IRremote" />
-          <root url="file://$MODULE_DIR$/lib/burnutils" />
+          <root url="file://$MODULE_DIR$/lib/OctoWS2811" />
+          <root url="file://$MODULE_DIR$/lib/Snooze" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
         </CLASSES>
@@ -358,26 +526,13 @@
           <root url="file://$USER_HOME$/.platformio/packages/framework-arduinoteensy/cores/teensy3" />
           <root url="file://$USER_HOME$/.platformio/packages/toolchain-gccarmnoneeabi/arm-none-eabi/include" />
           <root url="file://$USER_HOME$/.platformio/packages/toolchain-gccarmnoneeabi/lib/gcc/arm-none-eabi/4.8.3/include" />
-          <root url="file://$MODULE_DIR$/lib/Adafruit_NECremote" />
           <root url="file://$MODULE_DIR$/lib/FastIR" />
           <root url="file://$MODULE_DIR$/lib/FastLED" />
-          <root url="file://$MODULE_DIR$/lib/IRremote" />
-          <root url="file://$MODULE_DIR$/lib/burnutils" />
+          <root url="file://$MODULE_DIR$/lib/OctoWS2811" />
+          <root url="file://$MODULE_DIR$/lib/Snooze" />
           <root url="file:///usr/include" />
           <root url="file:///usr/local/include" />
         </SOURCES>
-        <excluded>
-          <root url="file://$MODULE_DIR$/lib/Adafruit_NECremote/Adafruit_NECremote.cpp" />
-          <root url="file://$MODULE_DIR$/lib/Adafruit_NECremote/Adafruit_NECremote.h" />
-          <root url="file://$MODULE_DIR$/lib/FastIR/FastIR.cpp" />
-          <root url="file://$MODULE_DIR$/lib/FastIR/FastIR.h" />
-          <root url="file://$MODULE_DIR$/lib/FastLED/FastLED.cpp" />
-          <root url="file://$MODULE_DIR$/lib/FastLED/FastLED.h" />
-          <root url="file://$MODULE_DIR$/lib/IRremote/IRremote.h" />
-          <root url="file://$MODULE_DIR$/lib/IRremote/IRremote.cpp" />
-          <root url="file://$MODULE_DIR$/lib/burnutils/burnutils.cpp" />
-          <root url="file://$MODULE_DIR$/lib/burnutils/burnutils.h" />
-        </excluded>
       </library>
     </orderEntry>
   </component>
