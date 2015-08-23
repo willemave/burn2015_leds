@@ -32,10 +32,18 @@ public:
     }
 
     virtual void loop(Context *context) {
-        for (int strip = 0; strip < _stripCount; ++strip) {
+        bool repeatStrips = this->repeatStrips();
+        int numLoops = repeatStrips ? 1 : _stripCount;
+        for (int strip = 0; strip < numLoops; ++strip) {
             for (int pixel = 0; pixel < _stripLength; ++pixel) {
                 CRGB c = static_cast<T *>(this)->colorForPixel(strip, pixel, *context);
-                context->setColor(strip, pixel, c);
+                if (repeatStrips) {
+                    for (int i = 0; i < _stripCount; i++) {
+                        context->setColor(i, pixel, c);
+                    }
+                } else {
+                    context->setColor(strip, pixel, c);
+                }
             }
         }
     };
@@ -46,6 +54,12 @@ public:
     
     int stripLength() {
         return _stripLength;
+    }
+    
+    
+    // If this is true, we'll only calculate for 1 strip and repeat it on all 8. This is an optimization
+    virtual bool repeatStrips() {
+        return true;
     }
     
 private:

@@ -9,12 +9,12 @@
 class Clock {
 public:
     // Milliseconds that have passed since last frame.
-    inline uint32_t delta() {
+    inline uint32_t delta() const {
         return delta_t;
     }
 
     // Delta in floating point. this is cached so makes it a bit easier
-    inline float deltaf() {
+    inline float deltaf() const {
         return deltaf_t;
     }
 

@@ -6,6 +6,7 @@
 #define TREELIGHTS_CONTROL_H
 
 
+#include <math.h>
 #include <stdint.h>
 #include "clock.h"
 #include <functional>
@@ -76,6 +77,41 @@ private:
     bool initialized = false;
     float _computedValue;
     float _actualValue;
+    
+    WrappedControlType _wrappedControl;
+};
+
+template <class WrappedControlType>
+class AccumulatorControl : public ValueControl<float> {
+public:
+    template <typename ...WrappedControlTypeArgs>
+    AccumulatorControl(WrappedControlTypeArgs... wrappedControlArgs) : _wrappedControl(wrappedControlArgs...) {
+        
+    }
+    
+    virtual void tick(const Clock &clock, uint8_t dmxValue) {
+        _wrappedControl.tick(clock, dmxValue);
+        _accumulatedValue += _wrappedControl.value() * clock.deltaf();
+        ValueControl<float>::tick(clock, dmxValue);
+    }
+    
+    virtual float computeNextValue(const Clock &clock, uint8_t dmxValue) {
+        return _accumulatedValue;
+    }
+    
+    // Truncates the value so we don't get floating point issues
+    void truncate(float frequency) {
+         _accumulatedValue = fmodf(_accumulatedValue, frequency);
+        if (_accumulatedValue < 0) {
+            _accumulatedValue += frequency;
+        }
+    }
+    
+private:
+    
+    bool initialized = false;
+    
+    float _accumulatedValue;
     
     WrappedControlType _wrappedControl;
 };
