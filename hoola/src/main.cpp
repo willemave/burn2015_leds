@@ -3,8 +3,9 @@
 #include <arm_math.h>
 #include <Snooze.h>
 #include <array>
+#include "star.h"
 
-#define LED_PIN 3
+#define LED_PIN 6
 #define NUM_LEDS 158       // Change to reflect the number of LEDs you have
 
 #define KEY_LEFT 3133634137
@@ -32,6 +33,7 @@ FastIR ir;
 
 static int32_t lastNow = 0;
 static int frameNum = 0;
+std::vector<int> starData;
 
 void tree();
 
@@ -87,8 +89,6 @@ void CaptureInput(void) {
         switch (key) {
             case KEY_ONE:
                 state.program = RAINBOW;
-                state.x = 128;
-                state.y = 128;
                 break;
             case KEY_TWO:
                 state.program = TREE;
@@ -99,11 +99,15 @@ void CaptureInput(void) {
                 break;
             case KEY_FOUR:
                 state.program = STAR;
-                state.x = 3;
+                state.x = 5;
+                state.y = 60;
                 break;
             case KEY_FIVE:
                 state.program = RANDOM;
                 state.x = 3;
+                break;
+            case KEY_SIX:
+                state.program = SOLID;
                 break;
             case KEY_INCREASE:
                 state.hertz = qadd8(state.hertz, 1);
@@ -134,17 +138,18 @@ void CaptureInput(void) {
                 break;
         }
 
+        if (state.program == STAR) {
+            starData = build_star(state.y, state.x);
+        }
+
         Serial.printf("program:%i, mode:%i, hz:%i, x:%i, y:%i \r\n", state.program, state.mode, state.hertz, state.x,
                       state.y);
     }
 }
 
-static int startingColor = 0;
-
 void rainbow() {
-    fill_rainbow(leds, NUM_LEDS, startingColor++ % 255, 1);
+    fill_rainbow(leds, NUM_LEDS, (uint8_t) ((millis() / (10 * state.hertz)) % 255), 1);
     FastLED.show();
-    FastLED.delay(state.hertz);
 }
 
 static const int pixelsPerEdge = 16;
@@ -194,58 +199,12 @@ void tree() {
     FastLED.show();
 }
 
-void star() {
-    int size = 20;
-    int points = 5;
-    std::array<std::array<int,size>,size> star;
-
-    void line(int x0,int y0,int x1,int y1) {
-        int steep = abs(y1 - y0) > abs(x1 - x0);
-        int temp;
-        if(steep) {
-            temp = x0; x0 = y0; y0 = temp;
-            temp = x1; x1 = y1; y1 = temp;
-        }
-        if(x0 > x1) {
-            temp = x0; x0 = x1; x1 = temp;
-            temp = y0; y0 = y1; y1 = temp;
-        }
-        int deltax = x1 - x0;
-        int deltay = abs(y1 - y0);
-        double error = 0.0;
-        double deltaerr = deltay / deltax;
-        int ystep = 0;
-        int y = y0;
-        if(y0 < y1) ystep = 1; else ystep = -1;
-        for(int x = x0; x <= x1; x++) {
-            if(steep) star[y][x] = 1; else star[x][y] = 1;
-            error = error + deltaerr;
-            if(error >= 0.5) {
-                y = y + ystep;
-                error = error - 1.0;
-            }
-        }
-    }
-
-    double r = (size - 1) / 2;
-
-    std::array<std::array<double,points>,2> tmp;
-    for (int i = 0; i < points; ++i) {
-        tmp[i][0] = floor(r * cos(M_PI * 2 / points * i) + size/2);
-        tmp[i][1] = floor(r * sin(M_PI * 2 / points * i) + size/2);
-    }
-
-    for (int i = 0; i < points; ++i) {
-        line(tmp[i][0], tmp[i][1], tmp[((i+2) % points)][0], tmp[((i+2) % points)][1]);
-    }
-}
-
-static int flopper = 0;
+static uint8_t flopper = 0;
 
 void checker() {
     int c1 = (state.y % 8) * 32;
     int c2 = 224 - (state.y % 8) * 32;
-    if (flopper) {
+    if (flopper == 0) {
         int ct = c1;
         c1 = c2;
         c2 = ct;
@@ -260,11 +219,23 @@ void checker() {
             }
         }
     }
-    FastLED.show();
-    flopper = ~flopper;
-    FastLED.delay(state.hertz * 500);
+
+        FastLED.show();
+    ;
+    if (millis() % (state.hertz * 100) < (state.hertz * 100) / 2) {
+        flopper = 1;
+    } else {
+        flopper = 0;
+    }
+    Serial.print(flopper);
+
 }
 
+void star() {
+
+}
+extern "C" int _kill(int pid, int sig) {return 0;}
+extern "C" int _getpid(void) { return 1;}
 
 void loop() {
     CaptureInput();
@@ -280,6 +251,9 @@ void loop() {
                     break;
                 case CHECKER:
                     checker();
+                    break;
+                case STAR:
+                    star();
                     break;
             }
             break;

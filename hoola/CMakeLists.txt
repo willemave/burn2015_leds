@@ -83,5 +83,5 @@ add_custom_target(
 )
 
 
-add_executable(star star.cpp)
+add_executable(star src/star.h)
 #set(CMAKE_C++_CREATE_SHARED_LIBRARY "")
