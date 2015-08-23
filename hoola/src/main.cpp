@@ -220,15 +220,13 @@ void checker() {
         }
     }
 
-        FastLED.show();
-    ;
+    FastLED.show();
+
     if (millis() % (state.hertz * 100) < (state.hertz * 100) / 2) {
         flopper = 1;
     } else {
         flopper = 0;
     }
-    Serial.print(flopper);
-
 }
 
 void star() {
@@ -260,6 +258,12 @@ void loop() {
         case OFF:
             // NO OP
             break;
+    }
+
+    if (frameNum % 3000) {
+        Serial.print(FastLED.getFPS());
+        Serial.printf("program:%i, mode:%i, hz:%i, x:%i, y:%i \r\n", state.program, state.mode, state.hertz, state.x,
+                      state.y);
     }
 }
 
