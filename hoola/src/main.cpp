@@ -1,9 +1,9 @@
 #include <FastLED.h>
 #include <FastIR.h>
-#include <arm_math.h>
 #include <Snooze.h>
 #include <array>
 #include "star.h"
+#include <stdbool.h>
 
 #define LED_PIN 6
 #define NUM_LEDS 158       // Change to reflect the number of LEDs you have
@@ -33,7 +33,6 @@ FastIR ir;
 
 static int32_t lastNow = 0;
 static int frameNum = 0;
-std::vector<int> starData;
 
 void tree();
 
@@ -45,13 +44,20 @@ void setup() {
 // pin setups!
     pinMode(13, OUTPUT);
 
-// let's get some debugs
-    Serial.begin(9600);
-
-// fast led?
+//// fast led?
     FastLED.addLeds<WS2812, LED_PIN>(leds, NUM_LEDS);
     FastLED.setDither(BINARY_DITHER);
     FastLED.setBrightness(50);
+
+
+// say hello
+    digitalWrite(13, HIGH);
+    delay(100);
+    digitalWrite(13, LOW);
+    delay(100);
+    digitalWrite(13, HIGH);
+    delay(100);
+    digitalWrite(13, LOW);
 }
 
 
@@ -88,25 +94,39 @@ void CaptureInput(void) {
         Serial.printf("%u \r\n", key);
         switch (key) {
             case KEY_ONE:
+                state.x = 0;
+                state.hertz = 1;
+                state.y = 0;
                 state.program = RAINBOW;
                 break;
             case KEY_TWO:
+                state.x = 0;
+                state.hertz = 1;
+                state.y = 0;
                 state.program = TREE;
                 break;
             case KEY_THREE:
                 state.program = CHECKER;
                 state.x = 27;
+                state.hertz = 2;
+                state.y = 0;
                 break;
             case KEY_FOUR:
                 state.program = STAR;
                 state.x = 5;
                 state.y = 60;
+                state.hertz = 1;
                 break;
             case KEY_FIVE:
                 state.program = RANDOM;
                 state.x = 3;
+                state.y = 60;
+                state.hertz = 1;
                 break;
             case KEY_SIX:
+                state.x = 3;
+                state.hertz = 2;
+                state.y = 32;
                 state.program = SOLID;
                 break;
             case KEY_INCREASE:
@@ -139,7 +159,7 @@ void CaptureInput(void) {
         }
 
         if (state.program == STAR) {
-            starData = build_star(state.y, state.x);
+//            starData = build_star(state.y, state.x);
         }
 
         Serial.printf("program:%i, mode:%i, hz:%i, x:%i, y:%i \r\n", state.program, state.mode, state.hertz, state.x,
@@ -199,11 +219,11 @@ void tree() {
     FastLED.show();
 }
 
-static uint8_t flopper = 0;
+static bool flopper = false;
 
 void checker() {
     int c1 = (state.y % 8) * 32;
-    int c2 = 224 - (state.y % 8) * 32;
+    int c2 = 0;
     if (flopper == 0) {
         int ct = c1;
         c1 = c2;
@@ -213,27 +233,53 @@ void checker() {
     for (int i = 0; i < NUM_LEDS; i += multiple) {
         for (int j = 0; j < multiple; ++j) {
             if (i % 2 == 0) {
-                leds[i + j].setHSV(c1, 255, 255);
+                leds[i + j].setHSV(c1, 240, 255);
             } else {
-                leds[i + j].setHSV(c2, 255, 255);
+                leds[i + j].setHSV(c2, 240, 255);
             }
         }
-    }
 
     FastLED.show();
 
-    if (millis() % (state.hertz * 100) < (state.hertz * 100) / 2) {
-        flopper = 1;
-    } else {
-        flopper = 0;
-    }
+    flopper = millis() % (state.hertz * 100) < (state.hertz * 100) / 2;
 }
 
 void star() {
 
 }
-extern "C" int _kill(int pid, int sig) {return 0;}
-extern "C" int _getpid(void) { return 1;}
+
+int currentHue = HUE_RED;
+int transitionStart = 0;
+int transitionLeft = 0;
+
+void solid() {
+    int timePast = millis() - lastNow;
+    int transitionTime = 100 * state.x;
+    int phase = state.y;
+
+    if (timePast > state.hertz * 1000) {
+        transitionStart = millis();
+        lastNow = millis();
+    }
+
+    if (transitionStart > 0) {
+        transitionLeft = millis() - transitionStart;
+        if (transitionTime > transitionLeft) {
+            int hueStep = (float)phase * (float)(millis() - transitionStart) / (float)transitionTime + currentHue;
+            fill_solid(leds, NUM_LEDS, CHSV(hueStep, 240, 255));
+        } else {
+            currentHue = (currentHue + phase) % 255;
+            transitionStart = 0;
+            fill_solid(leds, NUM_LEDS, CHSV(currentHue, 240, 255));
+        }
+    }
+    FastLED.show();
+}
+
+extern "C" int _kill(int pid, int sig) { return 0; }
+extern "C" int _getpid(void) { return 1; }
+
+static bool blink = false;
 
 void loop() {
     CaptureInput();
@@ -253,17 +299,15 @@ void loop() {
                 case STAR:
                     star();
                     break;
+                case SOLID:
+                    solid();
+                    break;
             }
             break;
         case OFF:
             // NO OP
             break;
     }
-
-    if (frameNum % 3000) {
-        Serial.print(FastLED.getFPS());
-        Serial.printf("program:%i, mode:%i, hz:%i, x:%i, y:%i \r\n", state.program, state.mode, state.hertz, state.x,
-                      state.y);
-    }
 }
+
 

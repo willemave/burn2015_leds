@@ -1,5 +1,6 @@
 #include <math.h>
 #include <vector>
+#include <stdlib.h>
 
 void line(std::vector<int> &star, int size, int x0, int y0, int x1, int y1) {
     int steep = abs(y1 - y0) > abs(x1 - x0);
@@ -65,13 +66,13 @@ std::vector<int> build_star(int size, int points) {
     return star;
 }
 
-int main() {
-    auto star = build_star(20, 5);
-
-    for (int i = 0; i < 20; ++i) {
-        for (int j = 0; j < 20; ++j) {
-            printf("%i ", star[i * 20 + j]);
-        }
-        printf("\n");
-    }
-}
+//int main() {
+//    auto star = build_star(20, 5);
+//
+//    for (int i = 0; i < 20; ++i) {
+//        for (int j = 0; j < 20; ++j) {
+//            printf("%i ", star[i * 20 + j]);
+//        }
+//        printf("\n");
+//    }
+//}
