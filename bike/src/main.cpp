@@ -32,12 +32,14 @@ extern "C" int _kill(int pid, int sig) { return 0; }
 extern "C" int _getpid(void) { return 1; }
 
 void loop() {
-    float centerOfWaveControl = NUM_LEDS * sin(millis() % 30000 * TWO_PI * 0.00004);
+    float centerOfWaveControl = NUM_LEDS * sin(((millis() % 50000) / 50000.0) * TWO_PI);
     float wavelength = 10;
     float lightnessPhase = NUM_LEDS * 3;
-    float colorPhase = -10;
+    float colorPhase = -3;
     float hueSliceMax = cos(centerOfWaveControl * 0.01) * 10 + M_PI * 0.5;
     float hueSliceMin = cos(centerOfWaveControl * 0.01) * 10 - M_PI * 0.5;
+
+    Serial.printf("%f \r\n", centerOfWaveControl);
 
     for (int p = 0; p < NUM_LEDS; p++) {
         float sinOffsetBase = (p + centerOfWaveControl) * TWO_PI / wavelength;

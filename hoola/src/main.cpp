@@ -101,7 +101,7 @@ void CaptureInput(void) {
                 break;
             case KEY_TWO:
                 state.x = 10;
-                state.hertz = 30;
+                state.hertz = 5;
                 state.y = 10;
                 state.program = TREE;
                 break;
@@ -172,11 +172,9 @@ void rainbow() {
     FastLED.show();
 }
 
-static const int pixelsPerEdge = 16;
-static const int edgeCount = 10;
-
 void tree() {
-    float centerOfWaveControl = NUM_LEDS * sin(millis() % (state.hertz * 1000) * TWO_PI * 0.00004);
+    int divisor = state.hertz * 10000;
+    float centerOfWaveControl = NUM_LEDS * sin(((millis() % divisor) / (float) divisor) * TWO_PI);
     float wavelength = state.x;
     float lightnessPhase = NUM_LEDS * 3;
     float colorPhase = -10;
@@ -196,7 +194,7 @@ void tree() {
         float hueFloat = fmodf(
                 fabsf((roundf(sinOffsetAdjusted) - sinOffsetAdjusted)) * (hueSliceMax - hueSliceMin) + hueSliceMin +
                 TWO_PI, TWO_PI);
-        
+
         uint8_t h = uint8_t(hueFloat / TWO_PI * 255);
 
         leds[p].setHSV(h, 240, v);
@@ -252,7 +250,7 @@ void solid() {
     if (transitionStart > 0) {
         transitionLeft = millis() - transitionStart;
         if (transitionTime > transitionLeft) {
-            int hueStep = (float)phase * (float)(millis() - transitionStart) / (float)transitionTime + currentHue;
+            int hueStep = (float) phase * (float) (millis() - transitionStart) / (float) transitionTime + currentHue;
             fill_solid(leds, NUM_LEDS, CHSV(hueStep, 240, 255));
         } else {
             currentHue = (currentHue + phase) % 255;
