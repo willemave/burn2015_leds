@@ -39,15 +39,14 @@ public:
 
         float sinOffsetV = sinOffsetBase +  _lightnessPhase.value() / _wavelength.value();
         int v = uint8_t((sinf(sinOffsetV) + 1) * 0.5 * 255);
-        
-        
+
         float sinOffsetH = sinOffsetBase + _colorPhase.value();
-        
-        
+
         float sinOffsetAdjusted = sinOffsetH / TWO_PI;
         
         // 0 - TWO_PI
-        float hueFloat = fmodf(fabsf((roundf(sinOffsetAdjusted) - sinOffsetAdjusted)) * (_hueSliceMax - _hueSliceMin) + _hueSliceMin + TWO_PI, TWO_PI);
+        float hueFloat = fmodf(fabsf((roundf(sinOffsetAdjusted) - sinOffsetAdjusted)) *
+                                       (_hueSliceMax - _hueSliceMin) + _hueSliceMin + TWO_PI, TWO_PI);
         
         uint8_t h = uint8_t(hueFloat / TWO_PI * 255);
         

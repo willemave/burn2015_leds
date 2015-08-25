@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.2)
 
-project(hoola)
+project(bike)
 
 include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoteensy/cores/teensy3")
 include_directories("$ENV{HOME}/.platformio/packages/framework-arduinoteensy/cores/teensy3/avr")

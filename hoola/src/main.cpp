@@ -78,9 +78,9 @@ enum LedMode {
 struct LedState {
     Program program = RAINBOW;
     LedMode mode = RUNNING;
-    unsigned int hertz = 1;
-    unsigned int x = 0;
-    unsigned int y = 0;
+    uint8_t hertz = 1;
+    uint8_t x = 0;
+    uint8_t y = 0;
 };
 
 LedState state;
@@ -100,9 +100,9 @@ void CaptureInput(void) {
                 state.program = RAINBOW;
                 break;
             case KEY_TWO:
-                state.x = 0;
-                state.hertz = 1;
-                state.y = 0;
+                state.x = 10;
+                state.hertz = 30;
+                state.y = 10;
                 state.program = TREE;
                 break;
             case KEY_THREE:
@@ -119,7 +119,7 @@ void CaptureInput(void) {
                 break;
             case KEY_FIVE:
                 state.program = RANDOM;
-                state.x = 3;
+                state.x = 5;
                 state.y = 60;
                 state.hertz = 1;
                 break;
@@ -176,44 +176,30 @@ static const int pixelsPerEdge = 16;
 static const int edgeCount = 10;
 
 void tree() {
+    float centerOfWaveControl = NUM_LEDS * sin(millis() % (state.hertz * 1000) * TWO_PI * 0.00004);
+    float wavelength = state.x;
+    float lightnessPhase = NUM_LEDS * 3;
+    float colorPhase = -10;
+    float hueSliceMax = cos(centerOfWaveControl * 0.01) * state.y + M_PI * 0.5;
+    float hueSliceMin = cos(centerOfWaveControl * 0.01) * state.y - M_PI * 0.5;
 
-    float timePast = (millis()) / (state.hertz * 1000.0);
+    for (int p = 0; p < NUM_LEDS; p++) {
+        float sinOffsetBase = (p + centerOfWaveControl) * TWO_PI / wavelength;
 
-    double period = 1.0;
+        float sinOffsetV = sinOffsetBase + lightnessPhase / wavelength;
+        int v = uint8_t((sinf(sinOffsetV) + 1) * 0.5 * 255);
 
-    double sliceSizeMult = 2.0 / (state.x + 1);
-    double sliceSizePhase = fmod(timePast * sliceSizeMult, M_PI * 2);
+        float sinOffsetH = sinOffsetBase + colorPhase;
 
-    float colorSliceSizeMin = 60.0;
+        float sinOffsetAdjusted = sinOffsetH / TWO_PI;
 
-    float colorSliceSizeSize = 60.0;
+        float hueFloat = fmodf(
+                fabsf((roundf(sinOffsetAdjusted) - sinOffsetAdjusted)) * (hueSliceMax - hueSliceMin) + hueSliceMin +
+                TWO_PI, TWO_PI);
+        
+        uint8_t h = uint8_t(hueFloat / TWO_PI * 255);
 
-    float colorSliceSize = colorSliceSizeMin + (sin(sliceSizePhase) * 0.5f + 0.5f) * colorSliceSizeSize;
-
-    double sliceSizeMult2 = 2.0 / (state.y + 1);
-
-    double slicePhase = fmod(timePast * sliceSizeMult2, M_PI * 2);
-    float colorSliceStart = (sin(slicePhase) * 0.5f + 0.5f) * 360.0f - colorSliceSize * .5f + 360.0f;
-
-
-    for (int p = 0; p < pixelsPerEdge; p++) {
-        float mult = 1.0;
-
-        float phase = fmod(timePast * mult + p / (float) (pixelsPerEdge), period) * M_PI * 2;
-        float sliceOffset = sin(phase) * 0.5 + 0.5;
-
-        uint8_t hue = uint32_t(colorSliceStart + sliceOffset * colorSliceSize) % 255;
-
-        float mult2 = 2.0 / (50 + 1);
-        float otherPhase = fmod(timePast * mult2 + p / (float) (pixelsPerEdge), period) * M_PI * 2;
-        float v = sin(otherPhase) * 0.5 + 0.5;
-
-        CRGB color = CHSV(hue, (uint8_t) (1.0 * 255), (uint8_t) (v * 255));
-
-        for (int edge = 0; edge < edgeCount; edge++) {
-            int pos = edge * pixelsPerEdge + p;
-            leds[pos] = color;
-        }
+        leds[p].setHSV(h, 240, v);
     }
 
     FastLED.show();
@@ -238,6 +224,7 @@ void checker() {
                 leds[i + j].setHSV(c2, 240, 255);
             }
         }
+    }
 
     FastLED.show();
 
@@ -278,8 +265,6 @@ void solid() {
 
 extern "C" int _kill(int pid, int sig) { return 0; }
 extern "C" int _getpid(void) { return 1; }
-
-static bool blink = false;
 
 void loop() {
     CaptureInput();
