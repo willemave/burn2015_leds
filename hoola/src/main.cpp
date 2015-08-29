@@ -30,13 +30,16 @@
 
 CRGB leds[NUM_LEDS];      //naming our LED array
 FastIR ir;
+SnoozeBlock snooze;
 
 static int32_t lastNow = 0;
 static int frameNum = 0;
 
-void tree();
+void sinewave();
 
 void rainbow();
+
+void rando();
 
 void star();
 
@@ -47,23 +50,22 @@ void setup() {
 //// fast led?
     FastLED.addLeds<WS2812, LED_PIN>(leds, NUM_LEDS);
     FastLED.setDither(BINARY_DITHER);
-    FastLED.setBrightness(50);
-
+    FastLED.setBrightness(75);
 
 // say hello
     digitalWrite(13, HIGH);
-    delay(100);
+    delay(200);
     digitalWrite(13, LOW);
-    delay(100);
+    delay(200);
     digitalWrite(13, HIGH);
-    delay(100);
+    delay(200);
     digitalWrite(13, LOW);
 }
 
 
 enum Program {
     RAINBOW = 1,
-    TREE = 2,
+    SINEWAVE = 2,
     CHECKER = 3,
     STAR = 4,
     RANDOM = 5,
@@ -76,11 +78,11 @@ enum LedMode {
 };
 
 struct LedState {
-    Program program = RAINBOW;
+    Program program = SOLID;
     LedMode mode = RUNNING;
-    uint8_t hertz = 1;
-    uint8_t x = 0;
-    uint8_t y = 0;
+    uint8_t hertz = 2;
+    uint8_t x = 3;
+    uint8_t y = 32;
 };
 
 LedState state;
@@ -91,7 +93,7 @@ void CaptureInput(void) {
     key = ir.getkeypress();
 
     if (key > 0) {
-        Serial.printf("%u \r\n", key);
+
         switch (key) {
             case KEY_ONE:
                 state.x = 0;
@@ -103,13 +105,13 @@ void CaptureInput(void) {
                 state.x = 10;
                 state.hertz = 5;
                 state.y = 10;
-                state.program = TREE;
+                state.program = SINEWAVE;
                 break;
             case KEY_THREE:
                 state.program = CHECKER;
-                state.x = 27;
-                state.hertz = 2;
-                state.y = 0;
+                state.x = 18;
+                state.hertz = 10;
+                state.y = 1;
                 break;
             case KEY_FOUR:
                 state.program = STAR;
@@ -154,7 +156,6 @@ void CaptureInput(void) {
                 state.mode = LedMode::OFF;
                 fill_solid(leds, NUM_LEDS, CHSV(0, 0, 0));
                 FastLED.show();
-                Snooze.idle();
                 break;
         }
 
@@ -172,61 +173,63 @@ void rainbow() {
     FastLED.show();
 }
 
-void tree() {
-    int divisor = state.hertz * 10000;
-    float centerOfWaveControl = NUM_LEDS * sin(((millis() % divisor) / (float) divisor) * TWO_PI);
+void sinewave() {
+    int rate = state.hertz * 10000;
+    float centerOfWaveControl = 1;
+
     float wavelength = state.x;
     float lightnessPhase = NUM_LEDS * 3;
     float colorPhase = -10;
-    float hueSliceMax = cos(centerOfWaveControl * 0.01) * state.y + M_PI * 0.5;
-    float hueSliceMin = cos(centerOfWaveControl * 0.01) * state.y - M_PI * 0.5;
+    float oscillator = NUM_LEDS * sin(((millis() % 30000) / (float) 30000) * TWO_PI);
+    float hueSliceMax = cos(oscillator * 0.01) * state.y + M_PI * 0.5;
+    float hueSliceMin = cos(oscillator * 0.01) * state.y - M_PI * 0.5;
+
+    if (state.x == 0) {
+        wavelength = oscillator;
+    }
+
+    if (rate > 0) {
+        centerOfWaveControl = NUM_LEDS * sin(((millis() % rate) / (float) rate) * TWO_PI);
+    }
 
     for (int p = 0; p < NUM_LEDS; p++) {
         float sinOffsetBase = (p + centerOfWaveControl) * TWO_PI / wavelength;
 
         float sinOffsetV = sinOffsetBase + lightnessPhase / wavelength;
         int v = uint8_t((sinf(sinOffsetV) + 1) * 0.5 * 255);
-
         float sinOffsetH = sinOffsetBase + colorPhase;
-
         float sinOffsetAdjusted = sinOffsetH / TWO_PI;
-
         float hueFloat = fmodf(
                 fabsf((roundf(sinOffsetAdjusted) - sinOffsetAdjusted)) * (hueSliceMax - hueSliceMin) + hueSliceMin +
                 TWO_PI, TWO_PI);
-
         uint8_t h = uint8_t(hueFloat / TWO_PI * 255);
-
         leds[p].setHSV(h, 240, v);
     }
-
     FastLED.show();
 }
 
-static bool flopper = false;
-
 void checker() {
-    int c1 = (state.y % 8) * 32;
-    int c2 = 0;
-    if (flopper == 0) {
-        int ct = c1;
-        c1 = c2;
-        c2 = ct;
+    CHSV c1 = CHSV((state.y % 8) * 32, 240, 255);
+    CHSV c2 = CHSV(0, 0, 0);
+    if (millis() % (state.hertz * 100) < (state.hertz * 100) / 2) {
+        CHSV ct = c2;
+        c2 = c1;
+        c1 = ct;
     }
+
     int multiple = floor(NUM_LEDS / state.x);
     for (int i = 0; i < NUM_LEDS; i += multiple) {
         for (int j = 0; j < multiple; ++j) {
-            if (i % 2 == 0) {
-                leds[i + j].setHSV(c1, 240, 255);
-            } else {
-                leds[i + j].setHSV(c2, 240, 255);
-            }
+            leds[i + j] = c2;
         }
+        CHSV ct = c2;
+        c2 = c1;
+        c1 = ct;
     }
-
     FastLED.show();
+}
 
-    flopper = millis() % (state.hertz * 100) < (state.hertz * 100) / 2;
+void rando() {
 }
 
 void star() {
@@ -266,15 +269,14 @@ extern "C" int _getpid(void) { return 1; }
 
 void loop() {
     CaptureInput();
-    frameNum++;
     switch (state.mode) {
         case RUNNING:
             switch (state.program) {
                 case RAINBOW:
                     rainbow();
                     break;
-                case TREE:
-                    tree();
+                case SINEWAVE:
+                    sinewave();
                     break;
                 case CHECKER:
                     checker();
@@ -285,10 +287,14 @@ void loop() {
                 case SOLID:
                     solid();
                     break;
+                case RANDOM:
+                    rando();
+                    break;
             }
             break;
         case OFF:
-            // NO OP
+            Snooze.idle();
+            delay(500);
             break;
     }
 }
