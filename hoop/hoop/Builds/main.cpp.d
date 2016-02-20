@@ -71,4 +71,9 @@ Builds/main.cpp.o: main.cpp \
  /Users/willem/Documents/Arduino/libraries/FastLED/fastspi.h \
  /Users/willem/Documents/Arduino/libraries/FastLED/fastspi_bitbang.h \
  /Users/willem/Documents/Arduino/libraries/FastLED/fastled_delay.h \
- /Users/willem/Documents/Arduino/libraries/FastLED/chipsets.h
+ /Users/willem/Documents/Arduino/libraries/FastLED/chipsets.h \
+ /Users/willem/Documents/Arduino/libraries/MicroShield/SFE_LSM9DS0.h \
+ dof.hpp \
+ /Applications/Arduino.app/Contents/Java/hardware/teensy/avr/libraries/SPI/SPI.h \
+ /Users/willem/Documents/Arduino/libraries/i2c_t3/i2c_t3.h \
+ /Applications/Arduino.app/Contents/Java/hardware/teensy/avr/cores/teensy3/DMAChannel.h

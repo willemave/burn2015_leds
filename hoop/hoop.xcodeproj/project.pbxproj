@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E62A90B81C55D9DC00437520 /* hoop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E64A90B81C55D9DC00437520 /* hoop.cpp */; };
 		E64A903D1C55D9DC00437520 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E64A903C1C55D9DC00437520 /* main.cpp */; };
+		E69FE9951C5749DD0050394B /* dof.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E69FE9931C5749DD0050394B /* dof.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,8 @@
 		E64A90B61C55D9DC00437520 /* TemplateIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = TemplateIcon.icns; path = Utilities/TemplateIcon.icns; sourceTree = "<group>"; };
 		E64A90B71C55D9DC00437520 /* uploader_izmir.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = uploader_izmir.sh; path = Utilities/uploader_izmir.sh; sourceTree = "<group>"; };
 		E64A90B81C55D9DC00437520 /* hoop.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; path = hoop.cpp; sourceTree = "<group>"; };
+		E69FE9931C5749DD0050394B /* dof.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dof.cpp; sourceTree = "<group>"; };
+		E69FE9941C5749DD0050394B /* dof.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = dof.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -86,6 +89,8 @@
 				E64A903C1C55D9DC00437520 /* main.cpp */,
 				E64A903E1C55D9DC00437520 /* Makefile */,
 				E64A90B81C55D9DC00437520 /* hoop.cpp */,
+				E69FE9931C5749DD0050394B /* dof.cpp */,
+				E69FE9941C5749DD0050394B /* dof.hpp */,
 				E64A90411C55D9DC00437520 /* Sketchbook */,
 				AAAA160124201957AA000000 /* Resources */,
 				E64A90431C55D9DC00437520 /* Configurations */,
@@ -283,6 +288,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E69FE9951C5749DD0050394B /* dof.cpp in Sources */,
 				E64A903D1C55D9DC00437520 /* main.cpp in Sources */,
 				E62A90B81C55D9DC00437520 /* hoop.cpp in Sources */,
 			);
