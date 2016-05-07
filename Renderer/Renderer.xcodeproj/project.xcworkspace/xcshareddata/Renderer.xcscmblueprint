@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "2F2960886970CBC19624AE75861E280DFCC80838",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "6920F3797F7813915682D317F749167AACBD8BDD" : 0,
+    "2F2960886970CBC19624AE75861E280DFCC80838" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "7CFE9949-56E6-4AEB-98F4-D83C3D85AB18",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "6920F3797F7813915682D317F749167AACBD8BDD" : "burn2015_leds\/libraries\/FastLED\/",
+    "2F2960886970CBC19624AE75861E280DFCC80838" : "burn2015_leds\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Renderer",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Renderer\/Renderer.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/willemave\/burn2015_leds",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "2F2960886970CBC19624AE75861E280DFCC80838"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/FastLED\/FastLED.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "6920F3797F7813915682D317F749167AACBD8BDD"
+    }
+  ]
+}

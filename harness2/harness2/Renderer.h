@@ -18,7 +18,7 @@ public:
   
   void consumeEvents();
   
-  void render(int out[], int length);
+  void render(CRGB out[], int length);
 };
 
 #endif /* Renderer_h */
