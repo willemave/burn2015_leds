@@ -8,11 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		E62A90B81C55D9DC00437520 /* hoop.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E64A90B81C55D9DC00437520 /* hoop.cpp */; };
+		E62D698F1CB76F55002F96C4 /* Renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E62D698E1CB76F55002F96C4 /* Renderer.cpp */; };
 		E64A903D1C55D9DC00437520 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E64A903C1C55D9DC00437520 /* main.cpp */; };
 		E69FE9951C5749DD0050394B /* dof.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E69FE9931C5749DD0050394B /* dof.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E62D698D1CB76C93002F96C4 /* Renderer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Renderer.h; sourceTree = "<group>"; };
+		E62D698E1CB76F55002F96C4 /* Renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Renderer.cpp; sourceTree = "<group>"; };
 		E64A90391C55D9DC00437520 /* Index */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Index; sourceTree = BUILT_PRODUCTS_DIR; };
 		E64A903C1C55D9DC00437520 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		E64A903E1C55D9DC00437520 /* Makefile */ = {isa = PBXFileReference; explicitFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
@@ -31,7 +34,7 @@
 		E64A90B71C55D9DC00437520 /* uploader_izmir.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = uploader_izmir.sh; path = Utilities/uploader_izmir.sh; sourceTree = "<group>"; };
 		E64A90B81C55D9DC00437520 /* hoop.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; path = hoop.cpp; sourceTree = "<group>"; };
 		E69FE9931C5749DD0050394B /* dof.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dof.cpp; sourceTree = "<group>"; };
-		E69FE9941C5749DD0050394B /* dof.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = dof.hpp; sourceTree = "<group>"; };
+		E69FE9941C5749DD0050394B /* dof.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dof.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -90,12 +93,14 @@
 				E64A903E1C55D9DC00437520 /* Makefile */,
 				E64A90B81C55D9DC00437520 /* hoop.cpp */,
 				E69FE9931C5749DD0050394B /* dof.cpp */,
-				E69FE9941C5749DD0050394B /* dof.hpp */,
+				E69FE9941C5749DD0050394B /* dof.h */,
 				E64A90411C55D9DC00437520 /* Sketchbook */,
 				AAAA160124201957AA000000 /* Resources */,
 				E64A90431C55D9DC00437520 /* Configurations */,
 				E64A908E1C55D9DC00437520 /* Makefiles */,
 				E64A90B01C55D9DC00437520 /* Utilities */,
+				E62D698D1CB76C93002F96C4 /* Renderer.h */,
+				E62D698E1CB76F55002F96C4 /* Renderer.cpp */,
 			);
 			path = hoop;
 			sourceTree = "<group>";
@@ -238,6 +243,7 @@
 		E64A902E1C55D9DC00437520 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Willem Ave";
 				TargetAttributes = {
@@ -267,6 +273,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = E64A902D1C55D9DC00437520;
 			productRefGroup = E64A903A1C55D9DC00437520 /* Products */;
@@ -288,6 +295,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E62D698F1CB76F55002F96C4 /* Renderer.cpp in Sources */,
 				E69FE9951C5749DD0050394B /* dof.cpp in Sources */,
 				E64A903D1C55D9DC00437520 /* main.cpp in Sources */,
 				E62A90B81C55D9DC00437520 /* hoop.cpp in Sources */,

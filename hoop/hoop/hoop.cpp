@@ -32,6 +32,8 @@
 // Add setup code
 void setup()
 {
+  analogReference(EXTERNAL);
+  analogReadResolution(12);
   setupdof();
 }
 
@@ -39,4 +41,13 @@ void setup()
 void loop()
 {
   loopy();
+}
+
+/*
+ // be sure to set the ADC to use the external reference, put the following in your setup():
+ analogReadAveraging(32); // this one is optional.
+ */
+uint32_t getInputVoltage(){ // for Teensy 3.1, only valid between 2.0V and 3.5V. Returns in millivolts.
+  uint32_t x = analogRead(39);
+  return (178*x*x + 2688743864 - 1182047 * x) / 371794;
 }

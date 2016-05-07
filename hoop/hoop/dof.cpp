@@ -6,7 +6,7 @@
 //  Copyright © 2016 Willem Ave. All rights reserved.
 //
 
-#include "dof.hpp"
+#include "dof.h"
 
 /*****************************************************************
  LSM9DS0_AHRS.ino
@@ -520,13 +520,14 @@ void loopy()
   }
 }
 
+
+#pragma mark - ACCEL_HELPERS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //Useful functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // I2C communication with the MS5637 is a little different from that with the MPU9250 and most other sensors
 // For the MS5637, we write commands, and the MS5637 sends data in response, rather than directly reading
 // MS5637 registers
-
 void MS5637Reset()
 {
   Wire1.beginTransmission(MS5637_ADDRESS);  // Initialize the Tx buffer
@@ -839,4 +840,5 @@ void MahonyQuaternionUpdate(float ax, float ay, float az, float gx, float gy, fl
   q[3] = q4 * norm;
   
 }
+
 

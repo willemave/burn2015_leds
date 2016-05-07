@@ -1,13 +1,13 @@
 //
-//  dof.hpp
+//  dof.h
 //  hoop
 //
 //  Created by Willem Ave on 1/25/16.
 //  Copyright © 2016 Willem Ave. All rights reserved.
 //
 
-#ifndef dof_hpp
-#define dof_hpp
+#ifndef dof_h
+#define dof_h
 
 #include <SPI.h>
 #include <i2c_t3.h>  // Teensy 3.1-specific  Wire1.h library
@@ -25,4 +25,4 @@ void printOrientation(float x, float y, float z);
 void MadgwickQuaternionUpdate(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz);
 void MahonyQuaternionUpdate(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz);
 
-#endif /* dof_hpp */
+#endif /* dof_h */
