@@ -13,35 +13,60 @@
 // Copyright	© Willem Ave, 2016
 // Licence		<#licence#>
 //
-// See         ReadMe.txt for references
-//
-
-// Core library for code-sense - IDE-based
 
 #include <Arduino.h>
 
-// Include application, user and local libraries
-
 #include <FastLED.h>
-#include <SFE_LSM9DS0.h>
-#include "dof.hpp"
+#include "dof.h"
 
-// Define variables and constants
+#define LED_PIN 6
 #define LED_PIN 13
+#define DATA_PIN 7
+#define CLOCK_PIN 14
+#define NUM_LEDS 205
+bool lowVoltage;
+uint32_t voltageTimer;
 
-// Add setup code
-void setup()
-{
-  analogReference(EXTERNAL);
-  analogReadResolution(12);
-  setupdof();
+CRGB leds[NUM_LEDS];
+
+void setup() {
+  // pin setups!
+  pinMode(13, OUTPUT);
+  
+  //// fast led?
+//  FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
+  FastLED.addLeds<APA102, DATA_PIN,CLOCK_PIN, GRB, DATA_RATE_MHZ(10)>(leds, NUM_LEDS);
+  FastLED.setDither(BINARY_DITHER);
+  FastLED.setBrightness(10);
+
+  // say hello
+  digitalWrite(13, HIGH);
+  delay(200);
+  digitalWrite(13, LOW);
+  delay(200);
+  
+  setupOrientation();
+  
 }
 
+void blink();
+uint32_t hue = 0;
 // Add loop code
+// Add loop code
+uint32_t loopTimer = 0;
 void loop()
 {
-  loopy();
+  if (millis() - loopTimer > 500) {
+    Position *p = updatePosition();
+    loopTimer = millis();
+    Serial.print("yaw = "); Serial.print(p->yaw);
+    Serial.print(" pitch = "); Serial.print(p->pitch);
+    Serial.print(" roll = "); Serial.print(p->roll);
+  }
+  fill_rainbow(leds, NUM_LEDS, hue++);
+  FastLED.show();
 }
+
 
 /*
  // be sure to set the ADC to use the external reference, put the following in your setup():

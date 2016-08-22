@@ -30,7 +30,6 @@
 		E64A90B61C55D9DC00437520 /* TemplateIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = TemplateIcon.icns; path = Utilities/TemplateIcon.icns; sourceTree = "<group>"; };
 		E64A90B71C55D9DC00437520 /* uploader_izmir.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = uploader_izmir.sh; path = Utilities/uploader_izmir.sh; sourceTree = "<group>"; };
 		E64A90B81C55D9DC00437520 /* hoop.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; path = hoop.cpp; sourceTree = "<group>"; };
-		E650E37F1CDEA5970066610D /* Position.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Position.h; sourceTree = "<group>"; };
 		E69FE9931C5749DD0050394B /* dof.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dof.cpp; sourceTree = "<group>"; };
 		E69FE9941C5749DD0050394B /* dof.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dof.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -97,7 +96,6 @@
 				E64A90431C55D9DC00437520 /* Configurations */,
 				E64A908E1C55D9DC00437520 /* Makefiles */,
 				E64A90B01C55D9DC00437520 /* Utilities */,
-				E650E37F1CDEA5970066610D /* Position.h */,
 			);
 			path = hoop;
 			sourceTree = "<group>";
