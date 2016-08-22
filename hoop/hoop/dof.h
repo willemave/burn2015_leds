@@ -10,7 +10,8 @@
 #define dof_h
 
 #include <SPI.h>
-#include <i2c_t3.h>  // Teensy 3.1-specific  Wire1.h library
+#include <kinetis.h>
+#include <i2c_t3.h>
 #include <SFE_LSM9DS0.h>
 
 struct Position {
@@ -20,8 +21,8 @@ struct Position {
   float raw;
 };
 
-void setupOrientation();
-Position *updatePosition();
+void setupDof();
+Position *loopDof();
 void MS5637Reset();
 void MS5637PromRead(uint16_t * destination);
 unsigned char MS5637checkCRC(uint16_t * n_prom);

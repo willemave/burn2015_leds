@@ -19,6 +19,7 @@
 #include <FastLED.h>
 #include "dof.h"
 
+
 #define LED_PIN 6
 #define LED_PIN 13
 #define DATA_PIN 7
@@ -45,7 +46,7 @@ void setup() {
   digitalWrite(13, LOW);
   delay(200);
   
-  setupOrientation();
+  setupDof();
   
 }
 
@@ -56,14 +57,22 @@ uint32_t hue = 0;
 uint32_t loopTimer = 0;
 void loop()
 {
-  if (millis() - loopTimer > 500) {
-    Position *p = updatePosition();
+  Position *p = loopDof();
+  int sum =(int) fabsf(p->yaw) + fabsf(p->yaw) + fabsf(p->yaw);
+  if (millis() - loopTimer > 50) {
+    
     loopTimer = millis();
     Serial.print("yaw = "); Serial.print(p->yaw);
     Serial.print(" pitch = "); Serial.print(p->pitch);
     Serial.print(" roll = "); Serial.print(p->roll);
+    Serial.print(" sum = "); Serial.print(sum);
+    Serial.print(" q0 = "); Serial.print(p->q[0]);
+    Serial.print(" q1 = "); Serial.print(p->q[1]);
+    Serial.print(" q2 = "); Serial.print(p->q[2]);
+    Serial.print(" q3 = "); Serial.print(p->q[3]);
+    Serial.println();
   }
-  fill_rainbow(leds, NUM_LEDS, hue++);
+  fill_rainbow(leds, NUM_LEDS, sum);
   FastLED.show();
 }
 

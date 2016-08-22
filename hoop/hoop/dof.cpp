@@ -1,29 +1,15 @@
-//
-//  dof.cpp
-//  hoop
-//
-//  Created by Willem Ave on 1/25/16.
-//  Copyright © 2016 Willem Ave. All rights reserved.
-//
-
-#include "dof.h"
-
 /*****************************************************************
  LSM9DS0_AHRS.ino
  SFE_LSM9DS0 Library AHRS Data Fusion Example Code
  Jim Lindblom @ SparkFun Electronics
  Original Creation Date: February 18, 2014
  https://github.com/sparkfun/LSM9DS0_Breakout
- 
  Modified by Kris Winer, April 4, 2014 and September 3, 2014
- 
  The LSM9DS0 is a versatile 9DOF sensor. It has a built-in
  accelerometer, gyroscope, and magnetometer. Very cool! Plus it
  functions over either SPI or I2C.
- 
  This Arduino sketch utilizes Jim Lindblom's SFE_LSM9DS0 library to generate the basic sensor data
  for use in two sensor fusion algorithms becoming increasingly popular with DIY quadcopter and robotics engineers.
- 
  Like the original LSM9SD0_simple.ino sketch, it'll demo the following:
  * How to create a LSM9DS0 object, using a constructor (global
  variables section).
@@ -43,9 +29,7 @@
  orientation relative to a fixed Earth frame providing absolute orientation information for subsequent use.
  * An example of how to use the quaternion data to generate standard aircraft orientation data in the form of
  Tait-Bryan angles representing the sensor yaw, pitch, and roll angles suitable for any vehicle stablization control application.
- 
  But wait, there's more!
- 
  * Using the LSM9DS0 + MS5637 Micro Add-On for Teensy 3.1 10 degrees of freedom can be accessed including
  absolute pressure in Pa, temperature in degree Centigrade, and an altitude estimate from these.
  
@@ -58,7 +42,6 @@
  LSM9DS0 over either I2C or SPI. However, using the LSM9DS0+MS5637 Micro Add-On board
  for Teensy 3.1, I2C is hardwired and SPI cannot be used.
  There is only one way to mouunt the board:
- 
 	LSM9DS0 Micro ----- Teensy 3.1
  SCL --------------pin 29   SCL
  SDA --------------pin 30   SDA
@@ -77,26 +60,23 @@
  The LSM9DS0 has a maximum voltage of 3.6V. Make sure you power it
  off the 3.3V rail! And either use level shifters between SCL
  and SDA or just use a 3.3V Arduino Pro.
- 
  In addition, this sketch uses a Nokia 5110 48 x 84 pixel display which requires
  digital pins 5 - 9 described below.
- 
  Development environment specifics:
 	IDE: Teensyduino 1.20
 	Hardware Platform: Teensy 3.1
 	LSM9DS0 + MS5637 Micro Add-On board v.01
  see: https://www.tindie.com/products/onehorse/lsm9ds0-teensy-31-micro-shield/
- 
  This code is beerware. If you see me (or any other SparkFun
  employee) at the local, and you've found our code helpful, please
  buy us a round!
- 
  Distributed as-is; no warranty is given.
  *****************************************************************/
 
 // The SFE_LSM9DS0 requires both the SPI and Wire libraries.
 // Unfortunately, you'll need to include both in the
 // sketch, before including the SFE_LSM9DS0 library.
+#include "dof.h"
 
 
 // See MS5637-02BA03 Low Voltage Barometric Pressure Sensor Data Sheet
@@ -131,7 +111,6 @@ LSM9DS0 dof(MODE_I2C, LSM9DS0_G, LSM9DS0_XM);
 #define ADC_4096 0x08
 #define ADC_8192 0x0A
 #define ADC_D1   0x40
-
 #define ADC_D2   0x50
 
 // Specify sensor full scale
@@ -180,16 +159,23 @@ float q[4] = {1.0f, 0.0f, 0.0f, 0.0f};    // vector to hold quaternion
 float eInt[3] = {0.0f, 0.0f, 0.0f};       // vector to hold integral error for Mahony method
 float temperature;
 
-
-
 Position p;
 
-void setupOrientation()
+void setupDof()
 {
-  delay(1000);
+  delay(5000);
+  Serial.begin(38400); // Start serial at 38400 bps
+  
+  // Set up interrupt pins as inputs:
+  pinMode(INT1XM, INPUT);
+  pinMode(INT2XM, INPUT);
+  pinMode(DRDYG,  INPUT);
+  pinMode(SDOpin,   OUTPUT);
+  digitalWrite(SDOpin, SDO);
+  pinMode(myLed,   OUTPUT);
+  digitalWrite(myLed, HIGH);
   
   Serial.println("This is the LSM9DS0...");
-  
   
   // begin() returns a 16-bit value which includes both the gyro
   // and accelerometers WHO_AM_I response. You can check this to
@@ -250,63 +236,143 @@ void setupOrientation()
   nCRC = MS5637checkCRC(Pcal);  //calculate checksum to ensure integrity of MS5637 calibration data
   Serial.print("Checksum = "); Serial.print(nCRC); Serial.print(" , should be "); Serial.println(refCRC);
   
-  delay(500);
+  delay(1000);
 }
 
-void printPosition()
+Position *loopDof()
 {
-  printHeading(p.mx, p.my);
-  printOrientation(p.gx, p.gy, p.gz);
-}
-
-Position *updatePosition() {
-  Serial.println("updatePosition");
   if(digitalRead(DRDYG)) {  // When new gyro data is ready
     dof.readGyro();           // Read raw gyro data
-    p.gx = dof.calcGyro(dof.gx) - gbias[0];   // Convert to degrees per seconds, remove gyro biases
-    p.gy = dof.calcGyro(dof.gy) - gbias[1];
-    p.gz = dof.calcGyro(dof.gz) - gbias[2];
-    
-    printOrientation(dof.calcGyro(dof.gx) - gbias[0], dof.calcGyro(dof.gy) - gbias[1], dof.calcGyro(dof.gz) - gbias[2]);
+    gx = dof.calcGyro(dof.gx) - gbias[0];   // Convert to degrees per seconds, remove gyro biases
+    gy = dof.calcGyro(dof.gy) - gbias[1];
+    gz = dof.calcGyro(dof.gz) - gbias[2];
   }
   
   if(digitalRead(INT1XM)) {  // When new accelerometer data is ready
     dof.readAccel();         // Read raw accelerometer data
-    p.ax = dof.calcAccel(dof.ax) - abias[0];   // Convert to g's, remove accelerometer biases
-    p.ay = dof.calcAccel(dof.ay) - abias[1];
-    p.az = dof.calcAccel(dof.az) - abias[2];
-    
-    
-    Serial.print(dof.ax);  Serial.print(",");
-    Serial.print(dof.ay);  Serial.print(",");
-    Serial.print(dof.az);  Serial.print(",");
-    Serial.println();
+    ax = dof.calcAccel(dof.ax) - abias[0];   // Convert to g's, remove accelerometer biases
+    ay = dof.calcAccel(dof.ay) - abias[1];
+    az = dof.calcAccel(dof.az) - abias[2];
   }
   
   if(digitalRead(INT2XM)) {  // When new magnetometer data is ready
     dof.readMag();           // Read raw magnetometer data
-    p.mx = dof.calcMag(dof.mx);     // Convert to Gauss and correct for calibration
-    p.my = dof.calcMag(dof.my);
-    p.mz = dof.calcMag(dof.mz);
-    
-    
-    Serial.print(dof.mx);  Serial.print(",");
-    Serial.print(dof.my);  Serial.print(",");
-    Serial.print(dof.mz);  Serial.print(",");
-    Serial.println();
+    mx = dof.calcMag(dof.mx);     // Convert to Gauss and correct for calibration
+    my = dof.calcMag(dof.my);
+    mz = dof.calcMag(dof.mz);
   }
   
-  MadgwickQuaternionUpdate(p.ax, p.ay, p.az, p.gx*PI/180.0f, p.gy*PI/180.0f, p.gz*PI/180.0f, p.mx, p.my, p.mz);
+  Now = micros();
+  deltat = ((Now - lastUpdate)/1000000.0f); // set integration time by time elapsed since last filter update
+  lastUpdate = Now;
   
-  p.yaw   = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);
-  p.pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
-  p.roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
-  p.pitch *= 180.0f / PI;
-  p.yaw   *= 180.0f / PI;
-  p.roll  *= 180.0f / PI;
+  sum += deltat;
+  sumCount++;
   
+  // Sensors x- and y-axes are aligned but magnetometer z-axis (+ down) is opposite to z-axis (+ up) of accelerometer and gyro!
+  // This is ok by aircraft orientation standards!
+  // Pass gyro rate as rad/s
+  MadgwickQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f, mx, my, mz);
+  // MahonyQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f, mx, my, mz);
+  
+  yaw   = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);
+  pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
+  roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
+  pitch *= 180.0f / PI;
+  yaw   *= 180.0f / PI;
+  yaw   -= 13.8; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
+  roll  *= 180.0f / PI;
+  
+  p.yaw = yaw;
+  p.pitch = pitch;
+  p.roll = roll;
+  p.q[0] = q[0];
+  p.q[1] = q[1];
+  p.q[2] = q[2];
+  p.q[3] = q[3];
   return &p;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//Useful functions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// I2C communication with the MS5637 is a little different from that with the MPU9250 and most other sensors
+// For the MS5637, we write commands, and the MS5637 sends data in response, rather than directly reading
+// MS5637 registers
+
+void MS5637Reset()
+{
+  Wire1.beginTransmission(MS5637_ADDRESS);  // Initialize the Tx buffer
+	 Wire1.write(MS5637_RESET);                // Put reset command in Tx buffer
+	 Wire1.endTransmission();                  // Send the Tx buffer
+}
+
+void MS5637PromRead(uint16_t * destination)
+{
+  uint8_t data[2] = {0,0};
+  for (uint8_t ii = 0; ii < 7; ii++) {
+    Wire1.beginTransmission(MS5637_ADDRESS);  // Initialize the Tx buffer
+    Wire1.write(0xA0 | ii << 1);              // Put PROM address in Tx buffer
+    Wire1.endTransmission(I2C_NOSTOP);        // Send the Tx buffer, but send a restart to keep connection alive
+    uint8_t i = 0;
+    Wire1.requestFrom(MS5637_ADDRESS, 2);   // Read two bytes from slave PROM address
+    while ( Wire1.available()) {
+      data[i++] =  Wire1.read(); }               // Put read results in the Rx buffer
+    destination[ii] = (uint16_t) (((uint16_t) data[0] << 8) | data[1]); // construct PROM data for return to main program
+  }
+}
+
+uint32_t MS5637Read(uint8_t CMD, uint8_t OSR)  // temperature data read
+{
+  uint8_t data[3] = {0,0,0};
+  Wire1.beginTransmission(MS5637_ADDRESS);  // Initialize the Tx buffer
+  Wire1.write(CMD | OSR);                  // Put pressure conversion command in Tx buffer
+  Wire1.endTransmission(I2C_NOSTOP);        // Send the Tx buffer, but send a restart to keep connection alive
+  
+  switch (OSR)
+  {
+    case ADC_256: delay(1); break;  // delay for conversion to complete
+    case ADC_512: delay(3); break;
+    case ADC_1024: delay(4); break;
+    case ADC_2048: delay(6); break;
+    case ADC_4096: delay(10); break;
+    case ADC_8192: delay(20); break;
+  }
+  
+  Wire1.beginTransmission(MS5637_ADDRESS);  // Initialize the Tx buffer
+  Wire1.write(0x00);                        // Put ADC read command in Tx buffer
+  Wire1.endTransmission(I2C_NOSTOP);        // Send the Tx buffer, but send a restart to keep connection alive
+  uint8_t i = 0;
+  Wire1.requestFrom(MS5637_ADDRESS, 3);     // Read three bytes from slave PROM address
+  while ( Wire1.available()) {
+    data[i++] =  Wire1.read(); }               // Put read results in the Rx buffer
+  return (uint32_t) (((uint32_t) data[0] << 16) | (uint32_t) data[1] << 8 | data[2]); // construct PROM data for return to main program
+}
+
+
+
+unsigned char MS5637checkCRC(uint16_t * n_prom)  // calculate checksum from PROM register contents
+{
+  int cnt;
+  unsigned int n_rem = 0;
+  unsigned char n_bit;
+  
+  n_prom[0] = ((n_prom[0]) & 0x0FFF);  // replace CRC byte by 0 for checksum calculation
+  n_prom[7] = 0;
+  for(cnt = 0; cnt < 16; cnt++)
+  {
+    if(cnt%2==1) n_rem ^= (unsigned short) ((n_prom[cnt>>1]) & 0x00FF);
+    else         n_rem ^= (unsigned short)  (n_prom[cnt>>1]>>8);
+    for(n_bit = 8; n_bit > 0; n_bit--)
+    {
+      if(n_rem & 0x8000)    n_rem = (n_rem<<1) ^ 0x3000;
+      else                  n_rem = (n_rem<<1);
+    }
+  }
+  n_rem = ((n_rem>>12) & 0x000F);
+  return (n_rem ^ 0x00);
+}
+
 
 // Here's a fun function to calculate your heading, using Earth's
 // magnetic field.
@@ -330,7 +396,7 @@ void printHeading(float hx, float hy)
     else heading = 0;
   }
   
-  Serial.print("heading = ");
+  Serial.print("Heading: ");
   Serial.println(heading, 2);
 }
 
@@ -346,8 +412,10 @@ void printOrientation(float x, float y, float z)
   pitch *= 180.0 / PI;
   roll *= 180.0 / PI;
   
-  Serial.print("pitch = "); Serial.print(pitch, 2);
-  Serial.print(" roll = "); Serial.println(roll, 2);
+  Serial.print("Pitch, Roll: ");
+  Serial.print(pitch, 2);
+  Serial.print(", ");
+  Serial.println(roll, 2);
 }
 
 
@@ -357,42 +425,6 @@ void printOrientation(float x, float y, float z)
 // device orientation -- which can be converted to yaw, pitch, and roll. Useful for stabilizing quadcopters, etc.
 // The performance of the orientation filter is at least as good as conventional Kalman-based filtering algorithms
 // but is much less computationally intensive---it can be performed on a 3.3 V Pro Mini operating at 8 MHz!
-
-void print_pretty(Position p) {
-  Serial.print("yaw = "); Serial.print(p.yaw);
-  Serial.print(" pitch = "); Serial.print(p.pitch);
-  Serial.print(" roll = "); Serial.print(p.roll);
-  
-  Serial.print(" q0 = "); Serial.print(p.q[0]);
-  Serial.print(" qx = "); Serial.print(p.q[1]);
-  Serial.print(" qy = "); Serial.print(p.q[2]);
-  Serial.print(" qz = "); Serial.print(p.q[3]);
-  
-  Serial.println();
-}
-
-void print_raw(Position p) {
-  Serial.print(p.raw);  Serial.print(",");
-  Serial.print(p.pitch);  Serial.print(",");
-  Serial.print(p.roll);  Serial.print(",");
-  Serial.print(p.heading);  Serial.print(",");
-  Serial.print(p.q[1]);  Serial.print(",");
-  Serial.print(p.q[2]);  Serial.print(",");
-  Serial.print(p.q[3]);  Serial.print(",");
-  
-  Serial.print(p.ax);  Serial.print(",");
-  Serial.print(p.ay);  Serial.print(",");
-  Serial.print(p.az);  Serial.print(",");
-  Serial.print(p.gx);  Serial.print(",");
-  Serial.print(p.gy);  Serial.print(",");
-  Serial.print(p.gz);  Serial.print(",");
-  Serial.print(p.mx);  Serial.print(",");
-  Serial.print(p.my);  Serial.print(",");
-  Serial.print(p.mz);  Serial.print(",");
-  
-  Serial.println();
-}
-
 void MadgwickQuaternionUpdate(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz)
 {
   float q1 = q[0], q2 = q[1], q3 = q[2], q4 = q[3];   // short name local variable for readability
@@ -483,91 +515,100 @@ void MadgwickQuaternionUpdate(float ax, float ay, float az, float gx, float gy, 
   q[2] = q3 * norm;
   q[3] = q4 * norm;
   
-  p.q[0] = q1 * norm;
-  p.q[1] = q2 * norm;
-  p.q[2] = q3 * norm;
-  p.q[3] = q4 * norm;
+}
+
+
+
+// Similar to Madgwick scheme but uses proportional and integral filtering on the error between estimated reference vectors and
+// measured ones.
+void MahonyQuaternionUpdate(float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz)
+{
+  float q1 = q[0], q2 = q[1], q3 = q[2], q4 = q[3];   // short name local variable for readability
+  float norm;
+  float hx, hy, bx, bz;
+  float vx, vy, vz, wx, wy, wz;
+  float ex, ey, ez;
+  float pa, pb, pc;
   
-}
-
-
-#pragma mark - ACCEL_HELPERS
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//Useful functions
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// I2C communication with the MS5637 is a little different from that with the MPU9250 and most other sensors
-// For the MS5637, we write commands, and the MS5637 sends data in response, rather than directly reading
-// MS5637 registers
-void MS5637Reset()
-{
-  Wire1.beginTransmission(MS5637_ADDRESS);  // Initialize the Tx buffer
-	 Wire1.write(MS5637_RESET);                // Put reset command in Tx buffer
-	 Wire1.endTransmission();                  // Send the Tx buffer
-}
-
-void MS5637PromRead(uint16_t * destination)
-{
-  uint8_t data[2] = {0,0};
-  for (uint8_t ii = 0; ii < 7; ii++) {
-    Wire1.beginTransmission(MS5637_ADDRESS);  // Initialize the Tx buffer
-    Wire1.write(0xA0 | ii << 1);              // Put PROM address in Tx buffer
-    Wire1.endTransmission(I2C_NOSTOP);        // Send the Tx buffer, but send a restart to keep connection alive
-    uint8_t i = 0;
-    Wire1.requestFrom(MS5637_ADDRESS, 2);   // Read two bytes from slave PROM address
-    while ( Wire1.available()) {
-      data[i++] =  Wire1.read(); }               // Put read results in the Rx buffer
-    destination[ii] = (uint16_t) (((uint16_t) data[0] << 8) | data[1]); // construct PROM data for return to main program
-  }
-}
-
-uint32_t MS5637Read(uint8_t CMD, uint8_t OSR)  // temperature data read
-{
-  uint8_t data[3] = {0,0,0};
-  Wire1.beginTransmission(MS5637_ADDRESS);  // Initialize the Tx buffer
-  Wire1.write(CMD | OSR);                  // Put pressure conversion command in Tx buffer
-  Wire1.endTransmission(I2C_NOSTOP);        // Send the Tx buffer, but send a restart to keep connection alive
+  // Auxiliary variables to avoid repeated arithmetic
+  float q1q1 = q1 * q1;
+  float q1q2 = q1 * q2;
+  float q1q3 = q1 * q3;
+  float q1q4 = q1 * q4;
+  float q2q2 = q2 * q2;
+  float q2q3 = q2 * q3;
+  float q2q4 = q2 * q4;
+  float q3q3 = q3 * q3;
+  float q3q4 = q3 * q4;
+  float q4q4 = q4 * q4;
   
-  switch (OSR)
+  // Normalise accelerometer measurement
+  norm = sqrt(ax * ax + ay * ay + az * az);
+  if (norm == 0.0f) return; // handle NaN
+  norm = 1.0f / norm;        // use reciprocal for division
+  ax *= norm;
+  ay *= norm;
+  az *= norm;
+  
+  // Normalise magnetometer measurement
+  norm = sqrt(mx * mx + my * my + mz * mz);
+  if (norm == 0.0f) return; // handle NaN
+  norm = 1.0f / norm;        // use reciprocal for division
+  mx *= norm;
+  my *= norm;
+  mz *= norm;
+  
+  // Reference direction of Earth's magnetic field
+  hx = 2.0f * mx * (0.5f - q3q3 - q4q4) + 2.0f * my * (q2q3 - q1q4) + 2.0f * mz * (q2q4 + q1q3);
+  hy = 2.0f * mx * (q2q3 + q1q4) + 2.0f * my * (0.5f - q2q2 - q4q4) + 2.0f * mz * (q3q4 - q1q2);
+  bx = sqrt((hx * hx) + (hy * hy));
+  bz = 2.0f * mx * (q2q4 - q1q3) + 2.0f * my * (q3q4 + q1q2) + 2.0f * mz * (0.5f - q2q2 - q3q3);
+  
+  // Estimated direction of gravity and magnetic field
+  vx = 2.0f * (q2q4 - q1q3);
+  vy = 2.0f * (q1q2 + q3q4);
+  vz = q1q1 - q2q2 - q3q3 + q4q4;
+  wx = 2.0f * bx * (0.5f - q3q3 - q4q4) + 2.0f * bz * (q2q4 - q1q3);
+  wy = 2.0f * bx * (q2q3 - q1q4) + 2.0f * bz * (q1q2 + q3q4);
+  wz = 2.0f * bx * (q1q3 + q2q4) + 2.0f * bz * (0.5f - q2q2 - q3q3);
+  
+  // Error is cross product between estimated direction and measured direction of gravity
+  ex = (ay * vz - az * vy) + (my * wz - mz * wy);
+  ey = (az * vx - ax * vz) + (mz * wx - mx * wz);
+  ez = (ax * vy - ay * vx) + (mx * wy - my * wx);
+  if (Ki > 0.0f)
   {
-    case ADC_256: delay(1); break;  // delay for conversion to complete
-    case ADC_512: delay(3); break;
-    case ADC_1024: delay(4); break;
-    case ADC_2048: delay(6); break;
-    case ADC_4096: delay(10); break;
-    case ADC_8192: delay(20); break;
+    eInt[0] += ex;      // accumulate integral error
+    eInt[1] += ey;
+    eInt[2] += ez;
   }
-  
-  Wire1.beginTransmission(MS5637_ADDRESS);  // Initialize the Tx buffer
-  Wire1.write(0x00);                        // Put ADC read command in Tx buffer
-  Wire1.endTransmission(I2C_NOSTOP);        // Send the Tx buffer, but send a restart to keep connection alive
-  uint8_t i = 0;
-  Wire1.requestFrom(MS5637_ADDRESS, 3);     // Read three bytes from slave PROM address
-  while ( Wire1.available()) {
-    data[i++] =  Wire1.read(); }               // Put read results in the Rx buffer
-  return (uint32_t) (((uint32_t) data[0] << 16) | (uint32_t) data[1] << 8 | data[2]); // construct PROM data for return to main program
-}
-
-
-
-unsigned char MS5637checkCRC(uint16_t * n_prom)  // calculate checksum from PROM register contents
-{
-  int cnt;
-  unsigned int n_rem = 0;
-  unsigned char n_bit;
-  
-  n_prom[0] = ((n_prom[0]) & 0x0FFF);  // replace CRC byte by 0 for checksum calculation
-  n_prom[7] = 0;
-  for(cnt = 0; cnt < 16; cnt++)
+  else
   {
-    if(cnt%2==1) n_rem ^= (unsigned short) ((n_prom[cnt>>1]) & 0x00FF);
-    else         n_rem ^= (unsigned short)  (n_prom[cnt>>1]>>8);
-    for(n_bit = 8; n_bit > 0; n_bit--)
-    {
-      if(n_rem & 0x8000)    n_rem = (n_rem<<1) ^ 0x3000;
-      else                  n_rem = (n_rem<<1);
-    }
+    eInt[0] = 0.0f;     // prevent integral wind up
+    eInt[1] = 0.0f;
+    eInt[2] = 0.0f;
   }
-  n_rem = ((n_rem>>12) & 0x000F);
-  return (n_rem ^ 0x00);
+  
+  // Apply feedback terms
+  gx = gx + Kp * ex + Ki * eInt[0];
+  gy = gy + Kp * ey + Ki * eInt[1];
+  gz = gz + Kp * ez + Ki * eInt[2];
+  
+  // Integrate rate of change of quaternion
+  pa = q2;
+  pb = q3;
+  pc = q4;
+  q1 = q1 + (-q2 * gx - q3 * gy - q4 * gz) * (0.5f * deltat);
+  q2 = pa + (q1 * gx + pb * gz - pc * gy) * (0.5f * deltat);
+  q3 = pb + (q1 * gy - pa * gz + pc * gx) * (0.5f * deltat);
+  q4 = pc + (q1 * gz + pa * gy - pb * gx) * (0.5f * deltat);
+  
+  // Normalise quaternion
+  norm = sqrt(q1 * q1 + q2 * q2 + q3 * q3 + q4 * q4);
+  norm = 1.0f / norm;
+  q[0] = q1 * norm;
+  q[1] = q2 * norm;
+  q[2] = q3 * norm;
+  q[3] = q4 * norm;
+  
 }
-
