@@ -60,7 +60,7 @@ void loop()
   Position *p = loopDof();
   int sum =(int) fabsf(p->yaw) + fabsf(p->yaw) + fabsf(p->yaw);
   if (millis() - loopTimer > 50) {
-    
+    fill_
     loopTimer = millis();
     Serial.print("yaw = "); Serial.print(p->yaw);
     Serial.print(" pitch = "); Serial.print(p->pitch);
@@ -73,9 +73,9 @@ void loop()
     Serial.println();
   }
   fill_rainbow(leds, NUM_LEDS, sum);
+  
   FastLED.show();
 }
-
 
 /*
  // be sure to set the ADC to use the external reference, put the following in your setup():
