@@ -31,50 +31,70 @@ uint32_t voltageTimer;
 CRGB leds[NUM_LEDS];
 
 void setup() {
-  // pin setups!
   pinMode(13, OUTPUT);
   
-  //// fast led?
-//  FastLED.addLeds<WS2812, DATA_PIN, GRB>(leds, NUM_LEDS);
   FastLED.addLeds<APA102, DATA_PIN,CLOCK_PIN, GRB, DATA_RATE_MHZ(10)>(leds, NUM_LEDS);
   FastLED.setDither(BINARY_DITHER);
-  FastLED.setBrightness(10);
-
-  // say hello
+  FastLED.setBrightness(200);
+  
   digitalWrite(13, HIGH);
   delay(200);
   digitalWrite(13, LOW);
   delay(200);
   
   setupDof();
-  
 }
 
 void blink();
 uint32_t hue = 0;
-// Add loop code
-// Add loop code
 uint32_t loopTimer = 0;
+float lastRoll = 0.0;
+float lastYaw = 0.0;
+float lastPitch = 0.0;
+float deltaSum = 0.0;
+int flip = 0;
+
 void loop()
 {
   Position *p = loopDof();
-  int sum =(int) fabsf(p->yaw) + fabsf(p->yaw) + fabsf(p->yaw);
-  if (millis() - loopTimer > 50) {
-    fill_
-    loopTimer = millis();
-    Serial.print("yaw = "); Serial.print(p->yaw);
-    Serial.print(" pitch = "); Serial.print(p->pitch);
-    Serial.print(" roll = "); Serial.print(p->roll);
-    Serial.print(" sum = "); Serial.print(sum);
-    Serial.print(" q0 = "); Serial.print(p->q[0]);
-    Serial.print(" q1 = "); Serial.print(p->q[1]);
-    Serial.print(" q2 = "); Serial.print(p->q[2]);
-    Serial.print(" q3 = "); Serial.print(p->q[3]);
-    Serial.println();
-  }
-  fill_rainbow(leds, NUM_LEDS, sum);
   
-  FastLED.show();
+  if (millis() - loopTimer > 50) {
+    lastYaw = p->yaw;
+    lastRoll = p->roll;
+    lastPitch = p->pitch;
+    loopTimer = millis();
+  }
+  Serial.println( (int)lastYaw);
+  if(millis() % 50000 < 10000) {
+    fill_rainbow(leds, NUM_LEDS, abs((int)lastYaw) * 5);
+    FastLED.show();
+  } else {
+    float centerOfWaveControl = sin(p->yaw / 5.0) * M_PI * 2;
+    float wavelength = 30;
+    float lightnessPhase = NUM_LEDS * 3;
+    float colorPhase = -3;
+    float hueSliceMax = sin(p->pitch / 5.0) + M_PI * 0.5;
+    float hueSliceMin = sin(p->pitch / 5.0) - M_PI * 0.5;
+    
+    for (int p = 0; p < NUM_LEDS; p++) {
+      float sinOffsetBase = (p + centerOfWaveControl) * TWO_PI / wavelength;
+      
+      float sinOffsetV = sinOffsetBase + lightnessPhase / wavelength;
+      int v = uint8_t((sinf(sinOffsetV) + 1) * 0.5 * 255);
+      float sinOffsetH = sinOffsetBase + colorPhase;
+      float sinOffsetAdjusted = sinOffsetH / TWO_PI;
+      float hueFloat = fmodf(
+                             fabsf((roundf(sinOffsetAdjusted) - sinOffsetAdjusted)) * (hueSliceMax - hueSliceMin) + hueSliceMin +
+                             TWO_PI, TWO_PI);
+      
+      uint8_t h = uint8_t(hueFloat / TWO_PI * 255);
+      
+      leds[p].setHSV(h, 255, v);
+    }
+    
+    FastLED.show();
+  }
+  
 }
 
 /*

@@ -282,6 +282,7 @@ Position *loopDof()
   yaw   *= 180.0f / PI;
   yaw   -= 13.8; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
   roll  *= 180.0f / PI;
+
   
   p.yaw = yaw;
   p.pitch = pitch;

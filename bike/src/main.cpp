@@ -29,6 +29,7 @@ void loop() {
   for(int i = 0; i < 255; i+=32) {
     nightRider(i);
   }
+  rainbow();
 }
 
 void nightRider(int hue) {
@@ -36,21 +37,31 @@ void nightRider(int hue) {
     int timer = millis();
     int step = millis() - timer;
     int strip = i % numStrips;
-    //      Serial.print("strip: ");
-    //      Serial.println(i % numStrips);
     while(step < fadeDelay) {
       for(int j = 0; j < 49; j++) {
         int val = (int)((255.0f / fadeDelay) * step);
         leds[strip * stripLength + j].setHSV( hue, 255, val);
         
       }
-      Serial.print("toColor: ");
-      Serial.println((int)((255.0f / fadeDelay) * step));
       step = millis() - timer;
       FastLED.show();
     }
-    
     toBlack(strip, hue);
+  }
+}
+
+void rainbow() {
+  int hue = 0;
+  int timer = millis();
+  int step = millis() - timer;
+  int strip = i % numStrips;
+  for(int iter = 0; iter < 100; i++) {
+    while(step < 100) {
+      fill_rainbow(&leds[0],49,hue);
+      fill_rainbow(&leds[48],49,hue);
+      fill_rainbow(&leds[97],49,hue);
+      fill_rainbow(&leds[146],49,hue);
+    }
   }
 }
 
@@ -62,8 +73,6 @@ void toBlack(int strip, int hue) {
       int val = 255 - (int)((255.0f / fadeDelay) * step);
       leds[i].setHSV(hue, 255, val);
     }
-    Serial.print("toBlack: ");
-    Serial.println(255 - (int)((255.0f / fadeDelay) * step));
     step = millis() - timer;
     FastLED.show();
   }
